@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
+<li class="nav-item"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
+<li class="nav-item"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
+<li class="nav-item active"><a class="nav-link" href="/login">login</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-6 p-5 card">
+            <form action="/login/" method="POST">
+                {% csrf_token %}
+                <h3>LOGIN</h3>
+                <div class="mb-3">
+                    <label for="UsernameLogin" class="form-label">Username</label>
+                    <input name="username" type="text" class="form-control" id="UsernameLogin">
+                </div>
+                <div class="mb-3">
+                    <label for="passLogin" class="form-label">Password</label>
+                    <input name="password" type="password" class="form-control" id="passLogin">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

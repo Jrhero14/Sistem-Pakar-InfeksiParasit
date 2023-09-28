@@ -1,0 +1,11 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: SistemPakarInfeksiParasit
+    src: ./
+    engine: python3.9
+    primary: true
+    run: uvicorn SistemPakarInfeksiParasit.asgi:app
+    dev: uvicorn SistemPakarInfeksiParasit.asgi:app --reload
+    public_routes:
+      - "/*"

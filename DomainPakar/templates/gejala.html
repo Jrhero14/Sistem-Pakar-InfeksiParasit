@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
+<li class="nav-item active"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
+<li class="nav-item"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
+{% if login %}
+<li class="nav-item"><a class="nav-link" href="/logout">logout <i class="bi bi-box-arrow-right"></i></a></li>
+{% else %}
+<li class="nav-item"><a class="nav-link" href="/login">login</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+     <nav class="mt-5" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+               <li class="breadcrumb-item"><a href="/">Home</a></li>
+               <li class="breadcrumb-item text-primary" aria-current="page">Daftar Gejala</li>
+          </ol>
+     </nav>
+
+
+     {% if login %}
+     <div class="container p-5 mt-3 card">
+          <form action="/tambahData/" method="POST">
+              {% csrf_token %}
+               <input type="hidden" name="TambahGejala" value="True">
+               <div class="mb-3">
+                    <label for="InputIDGejala" class="form-label">ID Gejala</label>
+                    <input name="ID" type="text" class="form-control" id="InputIDGejala" required>
+               </div>
+               <div class="mb-3">
+                    <label for="InputNamaGejala" class="form-label">Nama Gejala</label>
+                    <input name="nama" type="text" class="form-control" id="InputNamaGejala" required>
+               </div>
+               <div class="mb-3">
+                    <label for="InputPertanyaanGejala" class="form-label">Pertanyaan Gejala</label>
+                    <div class="form-floating">
+                         <textarea name="pertanyaan" class="form-control h-100" placeholder="Leave a comment here"
+                              id="InputPertanyaanGejala" required></textarea>
+                    </div>
+               </div>
+               <div class="mb-3">
+                    <label for="InputPenjelasanGejala" class="form-label">Penjelasan tentang Gejala</label>
+                    <div class="form-floating">
+                         <textarea name="penjelasan" class="form-control h-100" placeholder="Leave a comment here"
+                              id="InputPenjelasanGejala" required></textarea>
+                    </div>
+               </div>
+               <button type="submit" class="btn btn-primary" onclick="return confirm('Yakin tambah data gejala ?')">Tambah</button>
+          </form>
+     </div>
+     {% endif %}
+
+     {% if login %}
+         <table class="table my-5 table-bordered table-secondary border-2">
+         {% else %}
+         <table class="table my-5 table-bordered border-2">
+     {% endif %}
+          <thead>
+               <tr>
+                   <th class="col-1" scope="col">ID Gejala</th>
+                   <th class="col-2" scope="col">Nama Gejala</th>
+                   <th class="col-2" scope="col">Pertanyaan Gejala</th>
+                   <th class="col-2" scope="col">Penjelasan Gejala</th>
+                   {% if login %}
+                       <th class="col-1" scope="col">Action</th>
+                   {% endif %}
+               </tr>
+          </thead>
+          <tbody>
+          {% for gejala in gejalas %}
+               <tr>
+                    <th>{{ gejala.IDGejala }}</th>
+                    <td>{{ gejala.NamaGejala }}</td>
+                    <td>{{ gejala.Pertanyaan | truncatewords:20}}</td>
+                    <td>{{ gejala.SubPenjelasan | truncatewords:20 }}</td>
+                   {% if login %}
+                    <td>
+                         <div class="btn btn-warning">
+                              Details
+                         </div>
+                    </td>
+                    {% endif %}
+               </tr>
+          {% endfor %}
+          </tbody>
+     </table>
+</div>
+{% endblock %}

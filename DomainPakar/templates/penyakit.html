@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
+<li class="nav-item"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
+<li class="nav-item active"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
+{% if login %}
+<li class="nav-item"><a class="nav-link" href="/logout">logout <i class="bi bi-box-arrow-right"></i></a></li>
+{% else %}
+<li class="nav-item"><a class="nav-link" href="/login">login</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+     <nav class="mt-5" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+               <li class="breadcrumb-item"><a href="/">Home</a></li>
+               <li class="breadcrumb-item text-primary" aria-current="page">Daftar Penyakit</li>
+          </ol>
+     </nav>
+
+
+     {% if login %}
+     <div class="container p-5 mt-3 card">
+          <form action="/tambahData/" method="POST">
+               {% csrf_token %}
+               <input type="hidden" name="TambahPenyakit" value="True">
+               <div class="mb-3">
+                    <label for="InputIDPenyakit" class="form-label">ID Penyakit</label>
+                    <input name="ID" type="text" class="form-control" id="InputIDPenyakit" required>
+               </div>
+               <div class="mb-3">
+                    <label for="InputNamaPenyakit" class="form-label">Nama Penyakit</label>
+                    <input name="nama" type="text" class="form-control" id="InputNamaPenyakit" required>
+               </div>
+               <div class="mb-3">
+                    <label for="InputDefinisiPenyakit" class="form-label">Definisi Penyakit</label>
+                    <div class="form-floating">
+                         <textarea name="definisi" class="form-control h-100" placeholder="Leave a comment here"
+                              id="InputDefinisiPenyakit" required></textarea>
+                    </div>
+               </div>
+               <div class="mb-3">
+                    <label for="InputSolusiPenyakit" class="form-label">Solusi Penyakit</label>
+                    <div class="form-floating">
+                         <textarea name="solusi" class="form-control h-100" placeholder="Leave a comment here"
+                              id="InputSolusiPenyakit" required></textarea>
+                    </div>
+               </div>
+               <div class="mb-3">
+                    <label for="InputPencegahanPenyakit" class="form-label">Pencegahan Penyakit</label>
+                    <div class="form-floating">
+                         <textarea name="pencegahan" class="form-control h-100" placeholder="Leave a comment here"
+                              id="InputPencegahanPenyakit" required></textarea>
+                    </div>
+               </div>
+               <div class="mb-3">
+                    <table class="table" id="dynamicTable12" style="width: 100%">
+                         <tr>
+                              <th scope="col" span="1" style="width: 25%;">Gejala Penyakit</th>
+                         </tr>
+                         <tr>
+                              <td> <select name="Gejala1" class="form-control form-select js" id="state"
+                                        required="required">
+                                        <option value="">-- Pilih Gejala --</option>
+                                        {% for gejala in gejalas %}
+                                            <option value="{{ gejala.IDGejala }}">{{ gejala.IDGejala }}. {{ gejala.NamaGejala }}</option>
+                                        {% endfor %}
+                                   </select></td>
+                              <td><button type="button" name="add" id="addGejalaButton" class="btn btn-success">Tambah Gejala</button>
+                              </td>
+                         </tr>
+                    </table>
+               </div>
+               <button type="submit" class="btn btn-primary"
+                    onclick="return confirm('Yakin tambah data penyakit ?')">Tambah</button>
+          </form>
+     </div>
+     {% endif %}
+
+     {% if login %}
+     <table class="table my-5 table-bordered table-secondary border-2">
+          {% else %}
+          <table class="table my-5 table-bordered border-2">
+               {% endif %}
+               <thead>
+                    <tr>
+                         <th class="col-2" scope="col">ID Penyakit</th>
+                         <th class="col-2" scope="col">Nama Penyakit</th>
+                         <th class="col-5" scope="col">Solusi</th>
+                         <th class="col-4" scope="col">Pencegahan</th>
+                         {% if login %}
+                             <th class="col-1" scope="col">Action</th>
+                         {% endif %}
+                    </tr>
+               </thead>
+               <tbody>
+                    {% for penyakit in penyakits %}
+                    <tr>
+                         <th scope="row">{{ penyakit.IDPenyakit }}</th>
+                         <td>{{ penyakit.NamaPenyakit }}</td>
+                         <td>{{ penyakit.Solusi | truncatewords:30 }}</td>
+                         <td>{{ penyakit.Pencegahan | truncatewords:30 }}</td>
+                         {% if login %}
+                            <td>
+                                <div class="btn btn-warning">
+                                    <a href="/details/?IdPenyakit={{ penyakit.pk }}">Details</a>
+                                </div>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+               </tbody>
+          </table>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+     let initializeSelect2 = function () {
+          $('.js').select2();
+     }
+     
+     var i = 1;
+     $("#addGejalaButton").click(function () {
+          ++i;
+          $("#dynamicTable12").append(`
+          <tr>
+               <td>
+                    <select name="Gejala${i}" id="" class="form-control form-select js" required="required">
+                         <option value="">-- Pilih Gejala --</option>
+                         {% for gejala in gejalas %}
+                                <option value="{{ gejala.IDGejala }}">{{ gejala.IDGejala }}. {{ gejala.NamaGejala }}</option>
+                         {% endfor %}
+                    </select>
+               </td>
+
+               <td>
+                    <button type="button" class="btn btn-danger bg-danger remove-tr">Remove</button>
+               </td>
+          </tr>
+          `);
+     
+          initializeSelect2()
+     });
+
+     $(document).on('click', '.remove-tr', function () {
+          $(this).parents('tr').remove();
+     });
+     
+     $(document).ready(function () {
+          initializeSelect2()
+     });
+</script>
+{% endblock %}
