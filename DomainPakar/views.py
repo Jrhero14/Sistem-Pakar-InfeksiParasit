@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
-from DomainPakar.models import Penyakit, Gejala
+from DomainPakar.models import Penyakit, Gejala, Pasien
 from django.contrib.auth import login, authenticate, logout
+from datetime import datetime
+import random, string
 # Create your views here.
 def indexView(request):
     userLogin = request.user.is_authenticated and request.user.is_superuser
@@ -110,3 +112,77 @@ def detailsPenyakitView(request):
 def logoutView(request):
     logout(request)
     return redirect('/')
+
+def diagnosisView(request):
+    userLogin = request.user.is_authenticated and request.user.is_superuser
+
+    contexts = {
+        'login': userLogin,
+    }
+    return render(request=request, context=contexts, template_name='diagnosis.html')
+
+def pertanyaanView(request):
+    userLogin = request.user.is_authenticated and request.user.is_superuser
+    if request.method == 'POST':
+        isibiodata = request.POST.get('BiodataPasien')
+        isiPertanyaan = request.POST.get('TanyaPasien')
+        if isibiodata is not None:
+            IDPasien = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            namalengkap = request.POST.get('namalengkap')
+            tgllahir = request.POST.get('tgllahir')
+            jeniskelamin = request.POST.get('jeniskelamin')
+            alamat = request.POST.get('alamat')
+            nomortelp = request.POST.get('nomortelp')
+
+            pasienObj = Pasien.objects.create(
+                IDPasien=IDPasien,
+                NamaLengkap=namalengkap,
+                TanggalLahir=datetime.strptime(tgllahir, '%Y-%m-%d'),
+                JenisKelamin=jeniskelamin,
+                Alamat=alamat,
+                NomorTelp=nomortelp
+            )
+
+            contexts = {
+                'IdPasien': IDPasien,
+                'login': userLogin,
+                'GejalaObj': Gejala.objects.first()
+            }
+            return render(request=request, context=contexts, template_name='pertanyaan.html')
+        elif(isiPertanyaan is not None):
+            print(request.POST)
+            IDpasien = request.POST.get('IdPasien')
+            IDgejala = request.POST.get('IdGejala')
+
+            dump = int(str(IDgejala).replace('G', ''))
+            if (dump+1 < 10):
+                nextIDGejala = f'G0{dump+1}'
+            else:
+                nextIDGejala = f'G{dump+1}'
+
+
+            Iya = True if request.POST.get('Iya') is not None else False
+            Tidak = True if request.POST.get('Tidak') is not None else False
+
+
+            if Iya:
+                print("GEJALA IYAAAAAAA")
+                gejalaObj = Gejala.objects.get(IDGejala=IDgejala)
+                pasienObj = Pasien.objects.get(IDPasien=IDpasien)
+                pasienObj.GejalaPasien.add(gejalaObj)
+                pasienObj.save()
+            elif Tidak:
+                # Not Implement yet
+                pass
+
+            contexts = {
+                'IdPasien': IDpasien,
+                'login': userLogin,
+                'GejalaObj': Gejala.objects.get(IDGejala=nextIDGejala)
+            }
+
+            return render(request=request, context=contexts, template_name='pertanyaan.html')
+        else:
+            return redirect('/')
+    else:
+        return redirect('/')

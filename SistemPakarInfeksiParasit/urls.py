@@ -11,5 +11,7 @@ urlpatterns = [
     path('gejala/', PakarViews.gejalaView),
     path('tambahData/', PakarViews.tambahDataPOST),
     path('details/', PakarViews.detailsPenyakitView),
+    path('konsultasi/', PakarViews.diagnosisView),
+    path('pertanyaan/', PakarViews.pertanyaanView),
     path('', PakarViews.indexView),
 ]

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+<li class="nav-item active"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
+<li class="nav-item"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
+<li class="nav-item"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
+{% if login %}
+<li class="nav-item"><a class="nav-link" href="/logout">logout <i class="bi bi-box-arrow-right"></i></a></li>
+{% else %}
+<li class="nav-item"><a class="nav-link" href="/login">login</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+    <section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
+          <div class="container">
+               <div class="row">
+                    <div class="col-lg-6 col-md-12 col-xl-7">
+                         <div class="block">
+                              <div class="divider mb-3"></div>
+                              <h2 class="mb-3 mt-3">Sebelum melakukan pemeriksaan, mohon masukan data diri Anda</h2>
+
+                              <p class="mb-4 pr-5">Dengan memberikan data diri Anda, kami bisa menjangkau Anda. Data
+                                   Anda dijamin aman</p>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </section>
+
+    <section class="features">
+          <div class="container pb-5">
+               <div class="row">
+                    <div class="col-lg-12">
+                         <div class="feature-item mb-5 mb-lg-0">
+                              <form action="/pertanyaan/" method="POST">
+                                  {% csrf_token %}
+                                  <h3>Data Diri</h3>
+                                  <input name="BiodataPasien" type="hidden" value="True">
+                                  <div class="mb-3">
+                                       <label for="nama" class="form-label">Nama Lengkap</label>
+                                       <input name="namalengkap" type="text" class="form-control" id="nama">
+                                  </div>
+                                  <div class="mb-3">
+                                       <div class="row">
+                                            <div class="col-6">
+                                                 <label for="tgllahir" class="form-label">Tanggal Lahir</label>
+                                                 <input name="tgllahir" type="date" class="form-control" id="tgllahir">
+                                            </div>
+                                            <div class="col-6">
+                                                 <label class="form-label">Jenis Kelamin</label>
+                                                 <select name="jeniskelamin" class="form-select" aria-label="Pilih Jenis Kelamin">
+                                                      <option selected="">Pilih Jenis Kelamin</option>
+                                                      <option value="Laki-Laki">Laki-laki</option>
+                                                      <option value="Perempuan">Perempuan</option>
+                                                 </select>
+                                            </div>
+                                       </div>
+                                  </div>
+                                  <div class="mb-3">
+                                       <label for="alamat" class="form-label">Alamat</label>
+                                       <input name="alamat" type="text" class="form-control" id="alamat">
+                                  </div>
+                                  <div class="mb-3">
+                                       <label for="telp" class="form-label">Nomor Telepon</label>
+                                       <input name="nomortelp" type="number" class="form-control" id="telp">
+                                  </div>
+                                  <button class="btn btn-main btn-icon btn-round-full" type="submit" onclick="return confirm('Sudah Mengisi Data Dengan Benar ?')">Lanjutkan</button>
+                              </form>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </section>
+{% endblock %}

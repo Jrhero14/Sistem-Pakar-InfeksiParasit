@@ -36,10 +36,13 @@ class Pasien(models.Model):
 
     JenisKelamin = models.CharField(max_length=15, choices=OPTIONS, default='Laki-Laki')
 
+    GejalaPasien = models.ManyToManyField(Gejala, blank=True)
+
     Diagnosis = models.ForeignKey(
         Penyakit,
         on_delete=models.CASCADE,
         default=None,
+        null=True
     )
 
     def __str__(self):

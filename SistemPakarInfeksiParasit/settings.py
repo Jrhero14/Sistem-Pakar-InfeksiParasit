@@ -68,25 +68,25 @@ WSGI_APPLICATION = 'SistemPakarInfeksiParasit.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Development
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 #Production
 # To use Neon with Django, you have to create a Project on Neon and specify the project connection settings in your settings.py in the same way as for standalone Postgres.
-DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'neondb',
-    'USER': 'jeremi.herodian.a43',
-    'PASSWORD': 'SawxI6OYt2HV',
-    'HOST': 'ep-lively-pine-26827808.ap-southeast-1.aws.neon.tech',
-    'PORT': '5432',
-  }
-}
+# DATABASES = {
+#   'default': {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': 'neondb',
+#     'USER': 'jeremi.herodian.a43',
+#     'PASSWORD': 'SawxI6OYt2HV',
+#     'HOST': 'ep-lively-pine-26827808.ap-southeast-1.aws.neon.tech',
+#     'PORT': '5432',
+#   }
+# }
 
 
 # Password validation

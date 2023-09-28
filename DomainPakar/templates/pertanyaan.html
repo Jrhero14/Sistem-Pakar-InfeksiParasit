@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+<li class="nav-item active"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
+<li class="nav-item"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
+<li class="nav-item"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
+{% if login %}
+<li class="nav-item"><a class="nav-link" href="/logout">logout <i class="bi bi-box-arrow-right"></i></a></li>
+{% else %}
+<li class="nav-item"><a class="nav-link" href="/login">login</a></li>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+    <section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
+          <div class="container">
+               <div class="row">
+                    <div class="col-lg-6 col-md-12 col-xl-7">
+                         <div class="block">
+                              <label class="h5 mt-4" for="">{{ GejalaObj.IDGejala }}</label><p class="ms-2 d-inline">dari G37</p>
+                              <div class="divider"></div>
+                              <h2 class="mb-3 mt-5">{{ GejalaObj.Pertanyaan }}</h2>
+                              <p class="mb-4 pr-5">{{ GejalaObj.SubPenjelasan }}</p>
+                              <div class="d-flex">
+                                  <form class="me-3" action="/pertanyaan/" method="POST">
+                                  {% csrf_token %}
+                                   <input type="hidden" name="IdPasien" value="{{ IdPasien }}">
+                                   <input type="hidden" name="IdGejala" value="{{ GejalaObj.IDGejala }}">
+                                   <input type="hidden" name="TanyaPasien" value="True">
+                                   <button name="Iya" value="True" class="btn btn-success">Iya</button>
+                              </form>
+                             <form action="/pertanyaan/" method="POST">
+                                  {% csrf_token %}
+                                   <input type="hidden" name="IdPasien" value="{{ IdPasien }}">
+                                   <input type="hidden" name="IdGejala" value="{{ GejalaObj.IDGejala }}">
+                                   <input type="hidden" name="TanyaPasien" value="True">
+                                   <button name="Tidak" value="False" class="btn btn-danger">Tidak</button><br>
+                              </form>
+                              </div>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </section>
+{% endblock %}
