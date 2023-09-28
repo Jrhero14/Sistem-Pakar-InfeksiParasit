@@ -1,8 +1,5 @@
 from pathlib import Path
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = str(os.getenv('SECRET_KEY'))
+SECRET_KEY = 'django-insecure-4d2mb+#g9+@b=yx3t+s@go5k6b7d6(7b+rx6o0&y4j@@zz2p%e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -82,12 +79,12 @@ WSGI_APPLICATION = 'SistemPakarInfeksiParasit.wsgi.application'
 # To use Neon with Django, you have to create a Project on Neon and specify the project connection settings in your settings.py in the same way as for standalone Postgres.
 DATABASES = {
   'default': {
-    'ENGINE': str(os.getenv('ENGINE_DB')),
-    'NAME': str(os.getenv('NAME_DB')),
-    'USER': str(os.getenv('USER_DB')),
-    'PASSWORD': str(os.getenv('PASSWORD_DB')),
-    'HOST': str(os.getenv('HOST_DB')),
-    'PORT': str(os.getenv('PORT_DB')),
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'neondb',
+    'USER': 'jeremi.herodian.a43',
+    'PASSWORD': 'SawxI6OYt2HV',
+    'HOST': 'ep-lively-pine-26827808.ap-southeast-1.aws.neon.tech',
+    'PORT': '5432',
   }
 }
 
