@@ -149,6 +149,8 @@ def logoutView(request):
     return redirect('/')
 
 def diagnosisView(request):
+    if request.user.username == 'admin':
+        return redirect('/dashboard')
     userLogin = request.user.is_authenticated and request.user.is_superuser
 
     contexts = {
@@ -157,6 +159,8 @@ def diagnosisView(request):
     return render(request=request, context=contexts, template_name='diagnosis.html')
 
 def inputPasien(request):
+    if request.user.username == 'admin':
+        return redirect('/dashboard')
     if request.method == 'POST':
         isibiodata = request.POST.get('BiodataPasien')
         if isibiodata is not None:
@@ -186,6 +190,8 @@ def inputPasien(request):
             # return render(request=request, context=contexts, template_name='pertanyaan.html')
 
 def pertanyaanView(request):
+    if request.user.username == 'admin':
+        return redirect('/dashboard')
     userLogin = request.user.is_authenticated and request.user.is_superuser
     if request.method == 'POST':
         isiPertanyaan = request.POST.get('TanyaPasien')
