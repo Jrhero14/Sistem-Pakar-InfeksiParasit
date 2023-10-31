@@ -1,17 +1,5 @@
 {% extends 'base.html' %}
 
-{% block navbar %}
-<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-<li class="nav-item"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
-<li class="nav-item active"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
-<li class="nav-item"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
-{% if login %}
-<li class="nav-item"><a class="nav-link" href="/logout">logout <i class="bi bi-box-arrow-right"></i></a></li>
-{% else %}
-<li class="nav-item"><a class="nav-link" href="/login">login</a></li>
-{% endif %}
-{% endblock %}
-
 {% block content %}
 <div class="container">
      <nav class="mt-5" aria-label="breadcrumb">
@@ -79,9 +67,9 @@
                     <td>{{ gejala.SubPenjelasan | truncatewords:20 }}</td>
                    {% if login %}
                     <td>
-                         <div class="btn btn-warning">
-                              Details
-                         </div>
+                         <a class="btn btn-danger" href="/gejala?IDGejalaHapus={{ gejala.IDGejala }}" onclick="return confirm('Yakin akan menghapus gejala {{ gejala.NamaGejala }} ?')">
+                              Hapus
+                         </a>
                     </td>
                     {% endif %}
                </tr>

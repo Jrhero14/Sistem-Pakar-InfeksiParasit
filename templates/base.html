@@ -48,7 +48,11 @@
 		<nav class="navbar navbar-expand-lg navigation" id="navbar">
 			<div class="container">
 				<a class="navbar-brand" href="/">
-					<img src="{% static 'images/logo.png' %}" alt="" class="img-fluid">
+                    {% if user.username == 'admin' %}
+                        <img src="{% static 'images/logoAdmin.png' %}" alt="" class="img-fluid">
+                    {% else %}
+                        <img src="{% static 'images/logo.png' %}" alt="" class="img-fluid">
+                    {% endif %}
 				</a>
 
 				<button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
@@ -59,17 +63,16 @@
 
 				<div class="collapse navbar-collapse" id="navbarmain">
 					<ul class="navbar-nav ml-auto">
-                        {% block navbar %}
-						<li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
                         {% if login %}
+                            <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
                             <li class="nav-item"><a class="nav-link" href="/logout">logout <i class="bi bi-box-arrow-right"></i></a></li>
                         {% else %}
-                            <li class="nav-item"><a class="nav-link" href="/login">login</a></li>
+                            <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/login">login Admin</a></li>
                         {% endif %}
-                        {% endblock %}
 					</ul>
 				</div>
 			</div>
@@ -176,11 +179,14 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
 	<script src="{% static 'js/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	{% block scripts %}
 	
 	{% endblock %}
 
+{% load sweetify %}
+{% sweetify %}
 </body>
 
 </html>

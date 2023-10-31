@@ -1,17 +1,5 @@
 {% extends 'base.html' %}
 
-{% block navbar %}
-<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-<li class="nav-item"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
-<li class="nav-item"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
-<li class="nav-item active"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
-{% if login %}
-<li class="nav-item"><a class="nav-link" href="/logout">logout <i class="bi bi-box-arrow-right"></i></a></li>
-{% else %}
-<li class="nav-item"><a class="nav-link" href="/login">login</a></li>
-{% endif %}
-{% endblock %}
-
 {% block content %}
 <div class="container">
      <nav class="mt-5" aria-label="breadcrumb">
@@ -38,21 +26,21 @@
                <div class="mb-3">
                     <label for="InputDefinisiPenyakit" class="form-label">Definisi Penyakit</label>
                     <div class="form-floating">
-                         <textarea name="definisi" class="form-control h-100" placeholder="Leave a comment here"
+                         <textarea name="definisi" rows="5" class="form-control h-100" placeholder="Leave a comment here"
                               id="InputDefinisiPenyakit" required></textarea>
                     </div>
                </div>
                <div class="mb-3">
                     <label for="InputSolusiPenyakit" class="form-label">Solusi Penyakit</label>
                     <div class="form-floating">
-                         <textarea name="solusi" class="form-control h-100" placeholder="Leave a comment here"
+                         <textarea name="solusi" rows="5" class="form-control h-100" placeholder="Leave a comment here"
                               id="InputSolusiPenyakit" required></textarea>
                     </div>
                </div>
                <div class="mb-3">
                     <label for="InputPencegahanPenyakit" class="form-label">Pencegahan Penyakit</label>
                     <div class="form-floating">
-                         <textarea name="pencegahan" class="form-control h-100" placeholder="Leave a comment here"
+                         <textarea name="pencegahan" rows="5" class="form-control h-100" placeholder="Leave a comment here"
                               id="InputPencegahanPenyakit" required></textarea>
                     </div>
                </div>

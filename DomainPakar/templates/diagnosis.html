@@ -1,18 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block navbar %}
-<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-<li class="nav-item active"><a class="nav-link" href="/konsultasi">Diagnosis</a></li>
-<li class="nav-item"><a class="nav-link" href="/gejala">Daftar Gejala</a></li>
-<li class="nav-item"><a class="nav-link" href="/penyakit">Daftar Penyakit</a></li>
-{% if login %}
-<li class="nav-item"><a class="nav-link" href="/logout">logout <i class="bi bi-box-arrow-right"></i></a></li>
-{% else %}
-<li class="nav-item"><a class="nav-link" href="/login">login</a></li>
-{% endif %}
-{% endblock %}
-
 {% block content %}
     <section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
           <div class="container">
@@ -35,7 +23,7 @@
                <div class="row">
                     <div class="col-lg-12">
                          <div class="feature-item mb-5 mb-lg-0">
-                              <form action="/pertanyaan/" method="POST">
+                              <form action="/inputdataPasien/" method="POST">
                                   {% csrf_token %}
                                   <h3>Data Diri</h3>
                                   <input name="BiodataPasien" type="hidden" value="True">
@@ -67,7 +55,7 @@
                                        <label for="telp" class="form-label">Nomor Telepon</label>
                                        <input name="nomortelp" type="number" class="form-control" id="telp">
                                   </div>
-                                  <button class="btn btn-main btn-icon btn-round-full" type="submit" onclick="return confirm('Sudah Mengisi Data Dengan Benar ?')" disabled>Lanjutkan</button>
+                                  <button class="btn btn-main btn-icon btn-round-full" type="submit" onclick="return confirm('Sudah Mengisi Data Dengan Benar ?')">Lanjutkan</button>
                               </form>
                          </div>
                     </div>

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+     <div class="row">
+          <div class="col-12">
+               <h3 class="mb-3">Detail Pasien</h3>
+               <p for="" class="">Nama
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    : &nbsp;{{ Pasien.NamaLengkap }}</p>
+               <p for="">Tanggal Lahir &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+                    &nbsp;{{ Pasien.TanggalLahir }}</p>
+               <p for="">Jenis Kelamin &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                    &nbsp;{{ Pasien.JenisKelamin }}</p>
+               <p for="">Nomot Telepon &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;081386049201</p>
+               <p for="">Alamat
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    : &nbsp;{{ Pasien.Alamat }}</p>
+               <p for="">Tanggal Diagnosa &nbsp;&nbsp;&nbsp;&nbsp;: &nbsp;
+               {% if Pasien.TglDiagnosa is None %}
+                   Belum Terdiagnosis
+                   {% else %}
+                   {{ Pasien.TglDiagnosa }}
+                   {% endif %}
+               </p>
+          </div>
+          <div class="col-12">
+               <hr>
+               <h4 class="mb-3">Gejala yang pasien rasakan</h4>
+               <ol>
+                   {% for g in Gejalas %}
+                    <li>g.NamaGejala</li>
+                   {% endfor %}
+
+               </ol>
+          </div>
+          <div class="col-12">
+               <hr>
+               <h4 class="mb-2">Hasil Diagnosa</h4>
+               <p>Pasien ini menderita penyakit:</p>
+               <table class="table table-bordered">
+                    <thead>
+                         <tr>
+                              <th class="col-1 col-lg-2">Penyakit</th>
+                              <th class="">
+                                   
+                              </th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                         <tr>
+                              <td>Definisi</td>
+                              <td class="text-justify">
+
+                              </td>
+                         </tr>
+                         <tr>
+                              <td>Solusi</td>
+                              <td class="text-justify">
+
+                              </td>
+                         </tr>
+                         <tr>
+                              <td>Pencegahan</td>
+                              <td>
+                                   
+                              </td>
+                         </tr>
+                    </tbody>
+               </table>
+          </div>
+     </div>
+</div>
+
+
+{% endblock %}

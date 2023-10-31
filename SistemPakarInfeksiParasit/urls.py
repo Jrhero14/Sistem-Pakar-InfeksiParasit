@@ -13,5 +13,8 @@ urlpatterns = [
     path('details/', PakarViews.detailsPenyakitView),
     path('konsultasi/', PakarViews.diagnosisView),
     path('pertanyaan/', PakarViews.pertanyaanView),
+    path('inputdataPasien/', PakarViews.inputPasien),
+    path('detail-pasien/', PakarViews.detailPasienView),
+    path('dashboard/', PakarViews.indexAdmin),
     path('', PakarViews.indexView),
 ]

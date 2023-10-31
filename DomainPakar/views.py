@@ -3,13 +3,39 @@ from DomainPakar.models import Penyakit, Gejala, Pasien
 from django.contrib.auth import login, authenticate, logout
 from datetime import datetime
 import random, string
+import sweetify
+
 # Create your views here.
 def indexView(request):
+    if request.user.username == 'admin':
+        return redirect('/dashboard')
+
     userLogin = request.user.is_authenticated and request.user.is_superuser
     contexts = {
         'login': userLogin,
     }
     return render(request=request, context=contexts, template_name='index.html')
+
+def indexAdmin(request):
+    userLogin = request.user.is_authenticated and request.user.is_superuser
+    pasiens = Pasien.objects.all()
+    contexts = {
+        'login': userLogin,
+        'pasiens': pasiens
+    }
+    return render(request=request, context=contexts, template_name='admin.html')
+
+def detailPasienView(request):
+    IDPasien = request.GET.get('IDPasien')
+    userLogin = request.user.is_authenticated and request.user.is_superuser
+    if IDPasien is not None:
+        pasienObj = Pasien.objects.get(IDPasien=IDPasien)
+        contexts = {
+            'login': userLogin,
+            'Pasien': pasienObj,
+            'Gejalas': pasienObj.GejalaPasien.all()
+        }
+        return render(request=request, context=contexts, template_name='details-pasien.html')
 
 def tambahDataPOST(request):
     if request.method == 'POST':
@@ -41,6 +67,7 @@ def tambahDataPOST(request):
                     continue
             obj.save()
 
+            sweetify.success(request, 'Tambah Data Penyakit Berhasil')
             return redirect('/penyakit')
 
         if tambahGejala is not None:
@@ -55,8 +82,8 @@ def tambahDataPOST(request):
                 SubPenjelasan=penjelasan
             )
 
+            sweetify.success(request, 'Tambah Data Gejala Berhasil')
             return redirect('/gejala')
-
 
 def penyakitView(request):
     userLogin = request.user.is_authenticated and request.user.is_superuser
@@ -71,6 +98,15 @@ def penyakitView(request):
 
 def gejalaView(request):
     userLogin = request.user.is_authenticated and request.user.is_superuser
+
+    hapusGejalaID = request.GET.get('IDGejalaHapus')
+    if hapusGejalaID is not None:
+        gejalaObj = Gejala.objects.get(IDGejala=hapusGejalaID)
+        gejalaObj.delete()
+        sweetify.success(request, 'Hapus Data Gejala Berhasil')
+        return redirect('/gejala')
+
+
     gejalatObj = Gejala.objects.all()
     contexts = {
         'login': userLogin,
@@ -108,7 +144,6 @@ def detailsPenyakitView(request):
         }
         return render(request=request, context=contexts, template_name='details.html')
 
-
 def logoutView(request):
     logout(request)
     return redirect('/')
@@ -121,11 +156,9 @@ def diagnosisView(request):
     }
     return render(request=request, context=contexts, template_name='diagnosis.html')
 
-def pertanyaanView(request):
-    userLogin = request.user.is_authenticated and request.user.is_superuser
+def inputPasien(request):
     if request.method == 'POST':
         isibiodata = request.POST.get('BiodataPasien')
-        isiPertanyaan = request.POST.get('TanyaPasien')
         if isibiodata is not None:
             IDPasien = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
             namalengkap = request.POST.get('namalengkap')
@@ -143,13 +176,20 @@ def pertanyaanView(request):
                 NomorTelp=nomortelp
             )
 
-            contexts = {
-                'IdPasien': IDPasien,
-                'login': userLogin,
-                'GejalaObj': Gejala.objects.first()
-            }
-            return render(request=request, context=contexts, template_name='pertanyaan.html')
-        elif(isiPertanyaan is not None):
+            return redirect('/konsultasi')
+
+            # contexts = {
+            #     'IdPasien': IDPasien,
+            #     'login': False,
+            #     'GejalaObj': Gejala.objects.first()
+            # }
+            # return render(request=request, context=contexts, template_name='pertanyaan.html')
+
+def pertanyaanView(request):
+    userLogin = request.user.is_authenticated and request.user.is_superuser
+    if request.method == 'POST':
+        isiPertanyaan = request.POST.get('TanyaPasien')
+        if(isiPertanyaan is not None):
             print(request.POST)
             IDpasien = request.POST.get('IdPasien')
             IDgejala = request.POST.get('IdGejala')
