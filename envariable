@@ -1,0 +1,10 @@
+SECRET_KEY=django-insecure-4d2mb+#g9+@b=yx3t+s@go5k6b7d6(7b+rx6o0&y4j@@zz2p%e
+
+NAME_DB=neondb
+USER_DB=jeremi.herodian.a43
+PASSWORD_DB=SawxI6OYt2HV
+HOST_DB=ep-lively-pine-26827808.ap-southeast-1.aws.neon.tech
+PORT_DB=5432
+ENGINE_DB=django.db.backends.postgresql
+
+spacedev=c0M7LxV9BJxW_qVG61Psxa9HWfXa6hwhwvuxdbExUKrmd
