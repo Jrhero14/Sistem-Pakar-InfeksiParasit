@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4d2mb+#g9+@b=yx3t+s@go5k6b7d6(7b+rx6o0&y4j@@zz2p%e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['esinfeksi-1-u7643965.deta.app', 'localhost', '127.0.0.1', '127.0.0.1:8000']
 
@@ -71,27 +71,27 @@ WSGI_APPLICATION = 'SistemPakarInfeksiParasit.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Development
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 #Production
 # To use Neon with Django, you have to create a Project on Neon and specify the project connection settings in your settings.py in the same way as for standalone Postgres.
 
-DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'ESParasit',
-    'USER': 'Jrhero14',
-    'PASSWORD': '1yRQ9xLuhUKI',
-    'HOST': 'ep-snowy-violet-95658561.ap-southeast-1.aws.neon.tech',
-    'PORT': '5432',
-    'OPTIONS': {'sslmode': 'require'},
-  }
-}
+# DATABASES = {
+#   'default': {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': 'ESParasit',
+#     'USER': 'Jrhero14',
+#     'PASSWORD': '1yRQ9xLuhUKI',
+#     'HOST': 'ep-snowy-violet-95658561.ap-southeast-1.aws.neon.tech',
+#     'PORT': '5432',
+#     'OPTIONS': {'sslmode': 'require'},
+#   }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

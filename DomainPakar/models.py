@@ -49,3 +49,14 @@ class Pasien(models.Model):
 
     def __str__(self):
         return f'{self.id}. {self.NamaLengkap}'
+
+
+class CFPakar(models.Model):
+    RelasiPenyakit = models.ForeignKey(Penyakit, on_delete=models.CASCADE, null=True, blank=True)
+    RelasiGejala = models.ForeignKey(Gejala, on_delete=models.CASCADE, null=True, blank=True)
+    MB = models.FloatField(default=0.0)
+    MD = models.FloatField(default=0.0)
+    CF = models.FloatField(default=0.0)
+
+    def __str__(self):
+        return f'{self.id}. {self.RelasiPenyakit} | {self.RelasiGejala} = CF {self.CF}'

@@ -1,9 +1,86 @@
 from django.shortcuts import render, redirect
-from DomainPakar.models import Penyakit, Gejala, Pasien
+from DomainPakar.models import Gejala, Pasien, CFPakar, Penyakit
 from django.contrib.auth import login, authenticate, logout
 from datetime import datetime
 import random, string
 import sweetify
+import json
+
+def dumpData(request):
+    listGejala = []
+    listPenyakit = []
+
+    Gejalas = Gejala.objects.all()
+    Penyakits = Penyakit.objects.all()
+
+    for gejala in Gejalas:
+        listGejala.append({
+            'ID': gejala.IDGejala,
+            'NamaGejala': gejala.NamaGejala,
+            'Pertanyaan': gejala.Pertanyaan,
+            'Penjelasan': gejala.SubPenjelasan
+        })
+
+    for penyakit in Penyakits:
+        listPenyakit.append({
+            'ID': penyakit.IDPenyakit,
+            'NamaPenyakit': penyakit.NamaPenyakit,
+            'Definisi': penyakit.Definisi,
+            'Solusi': penyakit.Solusi,
+            'Pencegahan': penyakit.Pencegahan
+        })
+
+    # the json file where the output must be stored
+    out_file = open("gejala.json", "w")
+
+    json.dump({'gejalas': listGejala}, out_file, indent=6)
+
+    out_file.close()
+
+    out_file = open("penyakit.json", "w")
+
+    json.dump({'penyakit': listPenyakit}, out_file, indent=6)
+
+    out_file.close()
+
+    return redirect('/')
+
+def restore(request):
+    # Opening JSON file
+    f = open('gejala.json')
+
+    # returns JSON object as
+    # a dictionary
+    data = json.load(f)
+    data = data['gejalas']
+    for i in data:
+        Gejala.objects.create(
+            IDGejala=i['ID'],
+            NamaGejala=i['NamaGejala'],
+            Pertanyaan=i['Pertanyaan'],
+            SubPenjelasan=i['Penjelasan']
+        )
+        print('GEJALA DIBUAT BERHASIL')
+
+    f.close()
+    f = open('penyakit.json')
+
+    # returns JSON object as
+    # a dictionary
+    data = json.load(f)
+    data = data['penyakit']
+    for i in data:
+        Penyakit.objects.create(
+            IDPenyakit=i['ID'],
+            NamaPenyakit=i['NamaPenyakit'],
+            Definisi=i['Definisi'],
+            Solusi=i['Solusi'],
+            Pencegahan=i['Pencegahan']
+        )
+        print('PENYAKIT DIBUAT BERHASIL')
+    f.close()
+
+    return redirect('/')
 
 # Create your views here.
 def indexView(request):
@@ -86,6 +163,49 @@ def tambahDataPOST(request):
             return redirect('/gejala')
 
 def penyakitView(request):
+
+    if request.method == 'POST':
+        if request.POST.get('tambahGejalaKePenyakit') is not None:
+            GejalaTambahID = request.POST.get('GejalaTambah')
+            IDPenyakit = request.POST.get('IDPenyakit')
+            penyakitObj = Penyakit.objects.get(IDPenyakit=IDPenyakit)
+            gejalaObj = Gejala.objects.get(IDGejala=GejalaTambahID)
+            penyakitObj.GejalaPenyakit.add(gejalaObj)
+            penyakitObj.save()
+
+            sweetify.success(request, f'Tambah Gejala {gejalaObj.NamaGejala} ke Penyakit {penyakitObj.NamaPenyakit} Berhasil')
+            return redirect('/penyakit')
+
+        if request.POST.get('hapusGejalaDariPenyakit') is not None:
+            print(request.POST)
+            GejalaID = request.POST.get('GejalaID')
+            IDPenyakit = request.POST.get('IDPenyakit')
+            penyakitObj = Penyakit.objects.get(IDPenyakit=IDPenyakit)
+            gejalaObj = Gejala.objects.get(IDGejala=GejalaID)
+            penyakitObj.GejalaPenyakit.remove(gejalaObj)
+            print(penyakitObj.GejalaPenyakit.all())
+            penyakitObj.save()
+
+            sweetify.success(request,f'Hapus Gejala {gejalaObj.NamaGejala} dari Penyakit {penyakitObj.NamaPenyakit} Berhasil')
+            return redirect('/penyakit')
+
+        ID = request.POST.get('ID')
+        nama = request.POST.get('nama')
+        definisi = request.POST.get('definisi')
+        solusi = request.POST.get('solusi')
+        pencegahan = request.POST.get('pencegahan')
+
+        obj = Penyakit.objects.get(IDPenyakit=ID)
+        obj.NamaPenyakit = nama
+        obj.Definisi = definisi
+        obj.Solusi = solusi
+        obj.Pencegahan = pencegahan
+        obj.save()
+
+        sweetify.success(request,f'Perubahan data penyakit berhasil')
+        return redirect('/penyakit')
+
+
     userLogin = request.user.is_authenticated and request.user.is_superuser
     penyakitObj = Penyakit.objects.all()
     gejalaObj = Gejala.objects.all()
@@ -104,6 +224,20 @@ def gejalaView(request):
         gejalaObj = Gejala.objects.get(IDGejala=hapusGejalaID)
         gejalaObj.delete()
         sweetify.success(request, 'Hapus Data Gejala Berhasil')
+        return redirect('/gejala')
+
+    if request.method == 'POST':
+        ID = request.POST.get('ID')
+        nama = request.POST.get('nama')
+        pertanyaan = request.POST.get('pertanyaan')
+        penjelasan = request.POST.get('penjelasan')
+
+        sv = Gejala.objects.get(IDGejala=ID)
+        sv.NamaGejala = nama
+        sv.Pertanyaan =pertanyaan
+        sv.SubPenjelasan = penjelasan
+        sv.save()
+        sweetify.success(request, 'Perubahan Data Berhasil Disimpan')
         return redirect('/gejala')
 
 
@@ -232,3 +366,41 @@ def pertanyaanView(request):
             return redirect('/')
     else:
         return redirect('/')
+
+def rulebase(request):
+    hapusCF = request.GET.get('IDCFHapus')
+    if hapusCF is not None:
+        if CFPakar.objects.filter(pk=hapusCF).exists():
+            cfPObj = CFPakar.objects.get(pk=hapusCF)
+            cfPObj.delete()
+            sweetify.success(request, 'Hapus Nilai CF berhasil')
+            return redirect('/certain-factor')
+
+    if request.method == 'POST':
+        IDPenyakit = request.POST.get('Penyakit')
+        IDGejala = request.POST.get('Gejala')
+        MB = float(request.POST.get('MB'))
+        MD = float(request.POST.get('MD'))
+        CF = MB - MD
+
+        CFPakar.objects.create(
+            RelasiPenyakit=Penyakit.objects.get(IDPenyakit=IDPenyakit),
+            RelasiGejala=Gejala.objects.get(IDGejala=IDGejala),
+            MB=MB,
+            MD=MD,
+            CF=CF
+        )
+        sweetify.success(request, 'Tambah Data CF Berhasil')
+        return redirect('/certain-factor')
+
+    userLogin = request.user.is_authenticated and request.user.is_superuser
+    gejalas = Gejala.objects.all()
+    penyakits = Penyakit.objects.all()
+    cfpakar = CFPakar.objects.all()
+    contexts = {
+        'login': userLogin,
+        'gejalas': gejalas,
+        'penyakits': penyakits,
+        'cfpakar': cfpakar
+    }
+    return render(request=request, context=contexts, template_name='cf.html')
