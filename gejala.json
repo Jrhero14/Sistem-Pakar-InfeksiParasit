@@ -1,0 +1,142 @@
+{
+      "gejalas": [
+            {
+                  "ID": "G01",
+                  "NamaGejala": "Batuk",
+                  "Pertanyaan": "Apakah anda mengalami Batuk?",
+                  "Penjelasan": "Respons alami dari tubuh ketika ada sesuatu yang mengganggu atau mengiritasi saluran pernapasan."
+            },
+            {
+                  "ID": "G02",
+                  "NamaGejala": "Cacing ditemukan di muntah dan feses",
+                  "Pertanyaan": "Apakah anda mengalami Cacing ditemukan di muntah dan feses?",
+                  "Penjelasan": "Cacing berwarna putih ini ditemukan di dalam muntahan atau feses yang dikeluarkan."
+            },
+            {
+                  "ID": "G03",
+                  "NamaGejala": "Demam",
+                  "Pertanyaan": "Apakah anda mengalami Demam?",
+                  "Penjelasan": "Kondisi ketika suhu tubuh seseorang naik di atas batas normalnya. Suhu normal tubuh manusia berkisar antara 36 hingga 37 derajat"
+            },
+            {
+                  "ID": "G04",
+                  "NamaGejala": "Diare",
+                  "Pertanyaan": "Apakah anda mengalami Diare?",
+                  "Penjelasan": "Feses berbentuk encer, frekuensi buang air besar terlalu sering dalam satu hari."
+            },
+            {
+                  "ID": "G05",
+                  "NamaGejala": "Diare dan BAB disertai darah",
+                  "Pertanyaan": "Apakah anda mengalami Diare dan BAB disertai darah?",
+                  "Penjelasan": "Frekuensi BAB berlebihan, feses encer dan bercampur dengan darah"
+            },
+            {
+                  "ID": "G06",
+                  "NamaGejala": "Gangguan Pencernaan",
+                  "Pertanyaan": "Apakah anda mengalami Gangguan Pencernaan?",
+                  "Penjelasan": "Perut sakit, masalah BAB, mulas, perut nyeri, perut kembung, dsb"
+            },
+            {
+                  "ID": "G07",
+                  "NamaGejala": "Gatal di daerah Kelamin",
+                  "Pertanyaan": "Apakah anda mengalami Gatal di daerah Kelamin?",
+                  "Penjelasan": "Rasa gatal yang berlebihan dan terus menerus di area kelamin"
+            },
+            {
+                  "ID": "G08",
+                  "NamaGejala": "Iritasi kulit sekitar anus",
+                  "Pertanyaan": "Apakah anda mengalami Iritasi kulit sekitar anus?",
+                  "Penjelasan": "Rasa gatal yang berlebihan dan terus menerus di area kulit sekitar anus"
+            },
+            {
+                  "ID": "G09",
+                  "NamaGejala": "Kekurangan Gizi",
+                  "Pertanyaan": "Apakah anda mengalami Kekurangan Gizi?",
+                  "Penjelasan": "Kondisi saat tubuh tidak mendapat asupan nutrisi yang cukup dalam jangka waktu yang lama"
+            },
+            {
+                  "ID": "G10",
+                  "NamaGejala": "Lemas",
+                  "Pertanyaan": "Apakah tubuh anda Lemas?",
+                  "Penjelasan": "Kondisi tubuh tidak berenergi dan tidak bersemangat"
+            },
+            {
+                  "ID": "G11",
+                  "NamaGejala": "Menggertakkan gigi saat tidur",
+                  "Pertanyaan": "Apakah anda mengalami Menggertakkan gigi saat tidur?",
+                  "Penjelasan": "Keadaan tubuh saat menyatukan dan menggesek bagian gigi atas dengan gigi bawah saat tidur"
+            },
+            {
+                  "ID": "G12",
+                  "NamaGejala": "Mengigil",
+                  "Pertanyaan": "Apakah anda mengalami Mengigil?",
+                  "Penjelasan": "Upaya tubuh untuk menghasilkan panas tambahan dengan bergetar."
+            },
+            {
+                  "ID": "G13",
+                  "NamaGejala": "Mudah Lelah",
+                  "Pertanyaan": "Apakah anda mengalami Mudah Lelah?",
+                  "Penjelasan": "Keadaan dimana tubuh cepat merasa lelah walaupun tidak melakukan banyak aktivitas."
+            },
+            {
+                  "ID": "G14",
+                  "NamaGejala": "Muntah atau Mual",
+                  "Pertanyaan": "Apakah anda mengalami Muntah atau Mual?",
+                  "Penjelasan": "Perut terasa tidak nyaman atau mengeluarkan isi dari dalam lambung"
+            },
+            {
+                  "ID": "G15",
+                  "NamaGejala": "Nafsu Makan Berkurang",
+                  "Pertanyaan": "Apakah anda mengalami Nafsu Makan Berkurang?",
+                  "Penjelasan": "Keinginan untuk makan yang rendah walaupun tubuh lapar"
+            },
+            {
+                  "ID": "G16",
+                  "NamaGejala": "Nyeri Otot",
+                  "Pertanyaan": "Apakah anda mengalami Nyeri Otot?",
+                  "Penjelasan": "Sakit di bagian otot sehingga sulit untuk bergerak"
+            },
+            {
+                  "ID": "G17",
+                  "NamaGejala": "Pembesaran hati atau limpa",
+                  "Pertanyaan": "Apakah anda mengalami Pembesaran hati atau limpa?",
+                  "Penjelasan": "Pembengkakan limpa adalah kondisi ketika organ limpa membesar. Pembengkakan limpa biasanya ditandai dengan rasa sakit atau tidak nyaman di perut"
+            },
+            {
+                  "ID": "G18",
+                  "NamaGejala": "Penurunan Berat Badan",
+                  "Pertanyaan": "Apakah anda mengalami Penurunan Berat Badan?",
+                  "Penjelasan": "Turunnya massa tubuh secara tiba-tiba dan tidak direncanakan"
+            },
+            {
+                  "ID": "G19",
+                  "NamaGejala": "Sakit Buang Air Kecil",
+                  "Pertanyaan": "Apakah anda mengalami Sakit Buang Air Kecil?",
+                  "Penjelasan": "Nyeri pada saat buang air kecil pada alat kelamin."
+            },
+            {
+                  "ID": "G20",
+                  "NamaGejala": "Sakit Perut",
+                  "Pertanyaan": "Apakah anda mengalami Sakit Perut?",
+                  "Penjelasan": "Keadaan nyeri dan tidak enak pada bagian perut."
+            },
+            {
+                  "ID": "G21",
+                  "NamaGejala": "Sesak Nafas",
+                  "Pertanyaan": "Apakah anda mengalami Sesak Nafas?",
+                  "Penjelasan": "Kesulitan untuk bernafas"
+            },
+            {
+                  "ID": "G22",
+                  "NamaGejala": "Sulit Tidur",
+                  "Pertanyaan": "Apakah anda mengalami Sulit Tidur?",
+                  "Penjelasan": "Kesulitan membuat tubuh untuk tidur ataupun merasa ngantuk"
+            },
+            {
+                  "ID": "G23",
+                  "NamaGejala": "Urine Berdarah",
+                  "Pertanyaan": "Apakah anda mengalami Urine Berdarah?",
+                  "Penjelasan": "Terdapat kandungan darah di urine."
+            }
+      ]
+}

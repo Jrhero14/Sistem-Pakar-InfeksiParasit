@@ -4,8 +4,8 @@ from django.urls import path
 from DomainPakar import views as PakarViews
 
 urlpatterns = [
-    # path('restore/', PakarViews.restore),
-    # path('backup/', PakarViews.dumpData),
+    path('restore/', PakarViews.restore),
+    path('backup/', PakarViews.dumpData),
     path('admin/', admin.site.urls),
     path('login/', PakarViews.loginView),
     path('logout/', PakarViews.logoutView),
