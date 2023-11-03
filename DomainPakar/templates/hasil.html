@@ -5,10 +5,11 @@
 <div class="container mt-5 mb-5">
      <div class="row">
           <div class="col-8">
-               <h2>Rekam Medis</h2>
+               <h2>Hasil Analisa keluhan dan Diagnosis Anda menunjukkan</h2>
           </div>
           <div class="col-12 col-lg-8">
-               <p class="fs-6">Berikut adalah hasil rekam medis untuk pasien dengan keterangan sebagai berikut:</p>
+               <p class="fs-6">Berdasarkan keluhan yang telah anda konsultasikan ke dalam sistem kami, maka kami
+                    dapat menyimpulkan bahwa Anda mengalami penyakit:</p>
           </div>
           <div class="col-12">
                <hr>
@@ -31,7 +32,7 @@
           </div>
           <div class="col-12">
                <hr>
-               <h4 class="mb-3">Gejala yang dirasakan Pasien</h4>
+               <h4 class="mb-3">Gejala yang Anda rasakan</h4>
                <ol>
                    {% for gejala in pasien.GejalaPasien.all %}
                        <li>{{ gejala.IDGejala }}. {{ gejala.NamaGejala }}</li>

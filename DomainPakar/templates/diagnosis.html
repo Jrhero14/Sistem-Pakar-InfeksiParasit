@@ -2,7 +2,23 @@
 {% load static %}
 
 {% block content %}
-<section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
+    {% if already %}
+        <section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
+     <div class="container">
+          <div class="row">
+               <div class="col-lg-6 col-md-12 col-xl-7">
+                    <div class="block">
+                         <div class="divider mb-3"></div>
+                         <h2 class="mb-3 mt-3">{{ name }}, Anda sudah melakukan pendaftaran, silakan melanjutkan konsultasi</h2>
+
+                         <a href="/pertanyaan" class="mb-4 pr-5 btn btn-success">Lanjutkan Konsultasi</a>
+                    </div>
+               </div>
+          </div>
+     </div>
+</section>
+    {% else %}
+        <section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
      <div class="container">
           <div class="row">
                <div class="col-lg-6 col-md-12 col-xl-7">
@@ -64,4 +80,6 @@
           </div>
      </div>
 </section>
+    {% endif %}
+
 {% endblock %}

@@ -22,6 +22,15 @@ class Penyakit(models.Model):
     def __str__(self):
         return f'{self.id}. {self.NamaPenyakit}'
 
+class HasilDiagnosa(models.Model):
+    IDPasien = models.CharField(max_length=5, null=True, blank=True)
+    IDPenyakit = models.CharField(max_length=4, null=True, blank=True)
+    Persentase = models.FloatField()
+
+    def __str__(self):
+        return f'{self.id}. {self.IDPasien}|{self.IDPenyakit}|{self.Persentase}'
+
+
 class Pasien(models.Model):
     IDPasien = models.CharField(max_length=5, null=True, blank=True)
     NamaLengkap = models.CharField(max_length=255)
@@ -38,11 +47,9 @@ class Pasien(models.Model):
 
     GejalaPasien = models.ManyToManyField(Gejala, blank=True)
 
-    Diagnosis = models.ForeignKey(
-        Penyakit,
-        on_delete=models.CASCADE,
-        default=None,
-        null=True
+    Diagnosis = models.ManyToManyField(
+        HasilDiagnosa,
+        blank=True
     )
 
     TglDiagnosa = models.DateField(null=True, blank=True)
@@ -60,3 +67,12 @@ class CFPakar(models.Model):
 
     def __str__(self):
         return f'{self.id}. {self.RelasiPenyakit} | {self.RelasiGejala} = CF {self.CF}'
+
+class GejalaPasien(models.Model):
+    KeyPasien = models.ForeignKey(Pasien,on_delete=models.SET_NULL, null=True, blank=True)
+    KeyGejala = models.ForeignKey(Gejala,on_delete=models.SET_NULL, null=True, blank=True)
+
+    CFPasien = models.FloatField(default=0)
+
+    def __str__(self):
+        return f'{self.KeyPasien.IDPasien}.{self.KeyGejala.NamaGejala} | {self.KeyGejala} = CF {self.CFPasien}'

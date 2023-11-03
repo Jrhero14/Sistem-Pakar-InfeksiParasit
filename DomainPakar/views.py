@@ -1,11 +1,11 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from DomainPakar.models import Gejala, Pasien, CFPakar, Penyakit
+from DomainPakar.models import Gejala, Pasien, CFPakar, Penyakit, GejalaPasien, HasilDiagnosa
 from django.contrib.auth import login, authenticate, logout
 from datetime import datetime
 import random, string
 import sweetify
 import json
+
 
 def dumpData(request):
     listGejala = []
@@ -46,6 +46,7 @@ def dumpData(request):
 
     return redirect('/')
 
+
 def restore(request):
     # Opening JSON file
     f = open('gejala.json')
@@ -83,6 +84,7 @@ def restore(request):
 
     return redirect('/')
 
+
 # Create your views here.
 def indexView(request):
     if request.user.username == 'admin':
@@ -94,6 +96,7 @@ def indexView(request):
     }
     return render(request=request, context=contexts, template_name='index.html')
 
+
 def indexAdmin(request):
     userLogin = request.user.is_authenticated and request.user.is_superuser
     pasiens = Pasien.objects.all()
@@ -103,17 +106,63 @@ def indexAdmin(request):
     }
     return render(request=request, context=contexts, template_name='admin.html')
 
+
 def detailPasienView(request):
     IDPasien = request.GET.get('IDPasien')
     userLogin = request.user.is_authenticated and request.user.is_superuser
+
     if IDPasien is not None:
         pasienObj = Pasien.objects.get(IDPasien=IDPasien)
+        listTerbesar = list(pasienObj.Diagnosis.all().order_by('-Persentase').values_list('IDPenyakit'))
+
+        class hasilDiagnosaObj:
+            def __init__(self, penyakit: str, persen: float, definisi: str = '', solusi: str = '', pecegahan: str = ''):
+                self.namaPenyakit = penyakit
+                self.Persentase = round(persen, 2)
+                self.Definisi = definisi,
+                self.Solusi = solusi,
+                self.Pencegahan = pecegahan
+
+        gejalas = []
+        obj = Penyakit.objects.get(IDPenyakit=listTerbesar[0][0])
+        gejalas.append(
+            hasilDiagnosaObj(
+                penyakit=obj.NamaPenyakit,
+                persen=HasilDiagnosa.objects.get(IDPenyakit=listTerbesar[0][0], IDPasien=IDPasien).Persentase,
+                definisi=str(obj.Definisi),
+                solusi=str(obj.Solusi),
+                pecegahan=str(obj.Pencegahan)
+            )
+        )
+
+        gejalas[0].Definisi = gejalas[0].Definisi[0]
+        gejalas[0].Solusi = gejalas[0].Solusi[0]
+
+        for i in listTerbesar[1:]:
+            gejalas.append(
+                hasilDiagnosaObj(
+                    penyakit=Penyakit.objects.get(IDPenyakit=i[0]).NamaPenyakit,
+                    persen=HasilDiagnosa.objects.get(IDPenyakit=i[0], IDPasien=IDPasien).Persentase
+                )
+            )
+
         contexts = {
-            'login': userLogin,
-            'Pasien': pasienObj,
-            'Gejalas': pasienObj.GejalaPasien.all()
+            'pasien': pasienObj,
+            'GejalaTerbesar': gejalas[0],
+            'GejalaLain': gejalas[1:],
+            'login': False,
         }
-        return render(request=request, context=contexts, template_name='details-pasien.html')
+        response = render(request=request, context=contexts, template_name='details-pasien.html')
+        return response
+
+        # pasienObj = Pasien.objects.get(IDPasien=IDPasien)
+        # contexts = {
+        #     'login': userLogin,
+        #     'Pasien': pasienObj,
+        #     'Gejalas': pasienObj.GejalaPasien.all()
+        # }
+        # return render(request=request, context=contexts, template_name='details-pasien.html')
+
 
 def tambahDataPOST(request):
     if request.method == 'POST':
@@ -163,8 +212,8 @@ def tambahDataPOST(request):
             sweetify.success(request, 'Tambah Data Gejala Berhasil')
             return redirect('/gejala')
 
-def penyakitView(request):
 
+def penyakitView(request):
     if request.method == 'POST':
         if request.POST.get('tambahGejalaKePenyakit') is not None:
             GejalaTambahID = request.POST.get('GejalaTambah')
@@ -174,7 +223,8 @@ def penyakitView(request):
             penyakitObj.GejalaPenyakit.add(gejalaObj)
             penyakitObj.save()
 
-            sweetify.success(request, f'Tambah Gejala {gejalaObj.NamaGejala} ke Penyakit {penyakitObj.NamaPenyakit} Berhasil')
+            sweetify.success(request,
+                             f'Tambah Gejala {gejalaObj.NamaGejala} ke Penyakit {penyakitObj.NamaPenyakit} Berhasil')
             return redirect('/penyakit')
 
         if request.POST.get('hapusGejalaDariPenyakit') is not None:
@@ -187,7 +237,8 @@ def penyakitView(request):
             print(penyakitObj.GejalaPenyakit.all())
             penyakitObj.save()
 
-            sweetify.success(request,f'Hapus Gejala {gejalaObj.NamaGejala} dari Penyakit {penyakitObj.NamaPenyakit} Berhasil')
+            sweetify.success(request,
+                             f'Hapus Gejala {gejalaObj.NamaGejala} dari Penyakit {penyakitObj.NamaPenyakit} Berhasil')
             return redirect('/penyakit')
 
         ID = request.POST.get('ID')
@@ -203,9 +254,8 @@ def penyakitView(request):
         obj.Pencegahan = pencegahan
         obj.save()
 
-        sweetify.success(request,f'Perubahan data penyakit berhasil')
+        sweetify.success(request, f'Perubahan data penyakit berhasil')
         return redirect('/penyakit')
-
 
     userLogin = request.user.is_authenticated and request.user.is_superuser
     penyakitObj = Penyakit.objects.all()
@@ -216,6 +266,7 @@ def penyakitView(request):
         'gejalas': gejalaObj
     }
     return render(request=request, context=contexts, template_name='penyakit.html')
+
 
 def gejalaView(request):
     userLogin = request.user.is_authenticated and request.user.is_superuser
@@ -235,12 +286,11 @@ def gejalaView(request):
 
         sv = Gejala.objects.get(IDGejala=ID)
         sv.NamaGejala = nama
-        sv.Pertanyaan =pertanyaan
+        sv.Pertanyaan = pertanyaan
         sv.SubPenjelasan = penjelasan
         sv.save()
         sweetify.success(request, 'Perubahan Data Berhasil Disimpan')
         return redirect('/gejala')
-
 
     gejalatObj = Gejala.objects.all()
     contexts = {
@@ -248,6 +298,7 @@ def gejalaView(request):
         'gejalas': gejalatObj
     }
     return render(request=request, context=contexts, template_name='gejala.html')
+
 
 def loginView(request):
     if request.user.is_authenticated:
@@ -264,6 +315,7 @@ def loginView(request):
     contexts = {}
     return render(request=request, context=contexts, template_name='login.html')
 
+
 def detailsPenyakitView(request):
     userLogin = request.user.is_authenticated and request.user.is_superuser
     if request.method == 'GET':
@@ -279,34 +331,36 @@ def detailsPenyakitView(request):
         }
         return render(request=request, context=contexts, template_name='details.html')
 
+
 def logoutView(request):
     logout(request)
     return redirect('/')
 
+
 def diagnosisView(request):
+    print(request.COOKIES)
     if request.user.username == 'admin':
         return redirect('/dashboard')
     userLogin = request.user.is_authenticated and request.user.is_superuser
+    already = False
+    name = None
 
     if request.COOKIES.get('IDPasien') is not None:
-        contexts = {
-            'login': userLogin,
-        }
-        return render(request=request, context=contexts, template_name='diagnosis-already.html')
+        already = True
+        name = Pasien.objects.get(IDPasien=request.COOKIES.get('IDPasien')).NamaLengkap
 
     contexts = {
+        'already': already,
+        'name': name,
         'login': userLogin,
     }
     return render(request=request, context=contexts, template_name='diagnosis.html')
+
 
 def pertanyaanView(request):
     print(request.COOKIES)
     if request.user.username == 'admin':
         return redirect('/dashboard')
-
-    if request.COOKIES.get('IDPasien') is None:
-        sweetify.warning(request, 'Maaf Anda belum melakukan pendaftaran Pasien, silakan mendaftar')
-        return redirect('/konsultasi')
 
     userLogin = request.user.is_authenticated and request.user.is_superuser
     if request.method == 'POST':
@@ -328,19 +382,214 @@ def pertanyaanView(request):
                 NomorTelp=nomortelp
             )
             contexts = {
+                'gejalas': Gejala.objects.all(),
+                'gejalaspasien': GejalaPasien.objects.filter(KeyPasien__IDPasien=IDPasien),
+                'listGejalaPasien': list(
+                    GejalaPasien.objects.filter(KeyPasien__IDPasien=request.COOKIES.get('IDPasien')).values_list(
+                        'KeyGejala__NamaGejala', flat=True)),
                 'login': userLogin,
             }
             response = render(request=request, context=contexts, template_name='pertanyaan.html')
             response.set_cookie('IDPasien', IDPasien)
             return response
     else:
+        if request.COOKIES.get('IDPasien') is None:
+            sweetify.warning(request, 'Maaf Anda belum melakukan pendaftaran Pasien, silakan mendaftar')
+            return redirect('/konsultasi')
+
+        if request.GET.get('NamaGejala') is not None:
+            gejalas = Gejala.objects.filter(NamaGejala__contains=request.GET.get('NamaGejala'))
+        else:
+            gejalas = Gejala.objects.all()
+
         contexts = {
-            'gejalas': Gejala.objects.all(),
+            'gejalas': gejalas,
+            'gejalaspasien': GejalaPasien.objects.filter(KeyPasien__IDPasien=request.COOKIES.get('IDPasien')),
+            'listGejalaPasien': list(
+                GejalaPasien.objects.filter(KeyPasien__IDPasien=request.COOKIES.get('IDPasien')).values_list(
+                    'KeyGejala__NamaGejala', flat=True)),
             'login': userLogin,
         }
         response = render(request=request, context=contexts, template_name='pertanyaan.html')
         return response
         # return redirect('/')
+
+
+def pilihGejalaPasien(request):
+    if request.method == 'POST':
+
+        if request.POST.get('Delete') is not None:
+            GejalaPasien.objects.get(
+                KeyGejala__IDGejala=request.POST.get('IDGejala'),
+                KeyPasien__IDPasien=request.COOKIES.get('IDPasien')
+            ).delete()
+            sweetify.success(request, 'Gejala berhasil dihapus')
+            return redirect('/pertanyaan')
+
+        PasienObj = Pasien.objects.get(IDPasien=request.COOKIES.get('IDPasien'))
+        GejalaObj = Gejala.objects.get(IDGejala=request.POST.get('GejalaID'))
+        tingkatCF = request.POST.get('tingkat')
+
+        GejalaPasien.objects.create(
+            KeyPasien=PasienObj,
+            KeyGejala=GejalaObj,
+            CFPasien=float(tingkatCF) / 100.0
+        )
+        sweetify.success(request, 'Gejala Berhasil Dipilih')
+        return redirect('/pertanyaan')
+    else:
+        return redirect('/')
+
+
+def kumpulkanGejala(request):
+    idPasien = request.COOKIES.get('IDPasien')
+    gejalaPasienObj = GejalaPasien.objects.filter(KeyPasien__IDPasien=idPasien)
+    print(gejalaPasienObj)
+    pasienObj = Pasien.objects.get(IDPasien=idPasien)
+    for gejala in gejalaPasienObj:
+        pasienObj.GejalaPasien.add(gejala.KeyGejala)
+        pasienObj.save()
+    return redirect('/inference')
+
+
+def inferenceEngine(request):
+    def cfcombine(cf1: float, cf2: float) -> float:
+        return cf1 + (cf2 * (1 - cf1))
+
+    idPasien = request.COOKIES.get('IDPasien')
+    rules = {}
+    checkGejalainRules = {}
+    penyakitAllObj = Penyakit.objects.all()
+
+    for rule in penyakitAllObj:
+        rules[f'{rule.IDPenyakit}'] = list(rule.GejalaPenyakit.all().values_list('IDGejala', flat=True))
+        checkGejalainRules[f'{rule.IDPenyakit}'] = []
+
+    print("\nRULES:")
+    print(rules)
+
+    gejalaPasienObj = GejalaPasien.objects.filter(KeyPasien__IDPasien=idPasien)
+
+    for gejalaPasien in gejalaPasienObj:
+        for R in checkGejalainRules.keys():
+            if gejalaPasien.KeyGejala.IDGejala in rules[R]:
+                checkGejalainRules[R].append(gejalaPasien.KeyGejala.IDGejala)
+
+    print('\nRULES YANG AKTIF BERDASARKAN GEJALA YANG DIPILIH USER')
+    print(checkGejalainRules, '\n')
+
+    CFHitung = {}
+
+    for R in checkGejalainRules.keys():
+        if len(checkGejalainRules[R]) > 2:
+            kaliCF = []
+            for gpasien in checkGejalainRules[R]:
+                kaliCF.append(
+                    GejalaPasien.objects.get(KeyPasien__IDPasien=idPasien, KeyGejala__IDGejala=gpasien).CFPasien \
+                    * CFPakar.objects.get(RelasiGejala__IDGejala=gpasien, RelasiPenyakit__IDPenyakit=R).CF
+                )
+
+            cfOld = cfcombine(cf1=kaliCF[0], cf2=kaliCF[1])
+            for cf2 in kaliCF[2:]:
+                cfOld = cfcombine(cf1=cfOld, cf2=cf2)
+
+            CFHitung[R] = cfOld
+
+        elif len(checkGejalainRules[R]) == 2:
+            kaliCF = []
+            for gpasien in checkGejalainRules[R]:
+                kaliCF.append(
+                    GejalaPasien.objects.get(KeyPasien__IDPasien=idPasien, KeyGejala__IDGejala=gpasien).CFPasien \
+                    * CFPakar.objects.get(RelasiGejala__IDGejala=gpasien, RelasiPenyakit__IDPenyakit=R).CF
+                )
+
+            cfOld = cfcombine(cf1=kaliCF[0], cf2=kaliCF[1])
+            CFHitung[R] = cfOld
+        elif len(checkGejalainRules[R]) == 1:
+            gpasien = checkGejalainRules[R][0]
+            CFHitung[R] = GejalaPasien.objects.get(KeyPasien__IDPasien=idPasien, KeyGejala__IDGejala=gpasien).CFPasien \
+                          * CFPakar.objects.get(RelasiGejala__IDGejala=gpasien, RelasiPenyakit__IDPenyakit=R).CF
+        else:
+            CFHitung[R] = 0.0
+
+    # Konversi dalam bentuk persen
+    for k in CFHitung.keys():
+        CFHitung[k] = CFHitung.get(k) * 100
+
+    print("Perhitungan CF Akhir")
+    print(CFHitung, '\n')
+
+    response = redirect('/hasil-diagnosa')
+    response.set_cookie('CFDiagnosis', CFHitung)
+    return response
+
+
+def hasilDiagnosa(request):
+    idPasien = request.COOKIES.get('IDPasien')
+    CFAkhir = eval(request.COOKIES.get('CFDiagnosis'))
+    pasienObj = Pasien.objects.get(IDPasien=idPasien)
+    for k in CFAkhir.keys():
+        if float(CFAkhir[k]) != 0.0:
+            hasilObj = HasilDiagnosa.objects.create(
+                IDPasien=idPasien,
+                IDPenyakit=k,
+                Persentase=float(CFAkhir[k])
+            )
+            pasienObj.Diagnosis.add(hasilObj)
+            pasienObj.save()
+
+    now = datetime.now()
+    pasienObj.TglDiagnosa = now.date()
+    pasienObj.save()
+
+    listTerbesar = list(pasienObj.Diagnosis.all().order_by('-Persentase').values_list('IDPenyakit'))
+
+    class hasilDiagnosaObj:
+        def __init__(self, penyakit: str, persen: float, definisi: str = '', solusi: str = '', pecegahan: str = ''):
+            self.namaPenyakit = penyakit
+            self.Persentase = round(persen, 2)
+            self.Definisi = definisi,
+            self.Solusi = solusi,
+            self.Pencegahan = pecegahan
+
+    gejalas = []
+    obj = Penyakit.objects.get(IDPenyakit=listTerbesar[0][0])
+    gejalas.append(
+        hasilDiagnosaObj(
+            penyakit=obj.NamaPenyakit,
+            persen=HasilDiagnosa.objects.get(IDPenyakit=listTerbesar[0][0], IDPasien=idPasien).Persentase,
+            definisi=str(obj.Definisi),
+            solusi=str(obj.Solusi),
+            pecegahan=str(obj.Pencegahan)
+        )
+    )
+
+    gejalas[0].Definisi = gejalas[0].Definisi[0]
+    gejalas[0].Solusi = gejalas[0].Solusi[0]
+
+    for i in listTerbesar[1:]:
+        gejalas.append(
+            hasilDiagnosaObj(
+                penyakit=Penyakit.objects.get(IDPenyakit=i[0]).NamaPenyakit,
+                persen=HasilDiagnosa.objects.get(IDPenyakit=i[0], IDPasien=idPasien).Persentase
+            )
+        )
+
+    contexts = {
+        'pasien': pasienObj,
+        'GejalaTerbesar': gejalas[0],
+        'GejalaLain': gejalas[1:],
+        'login': False,
+    }
+
+    sweetify.success(request, 'Hasil Diagnosa berhasil didapatkan')
+    response = render(request=request, context=contexts, template_name='hasil.html')
+
+    # Delete All Cookies
+    for cookie in request.COOKIES:
+        response.delete_cookie(cookie)
+    return response
+
 
 def editcf(request):
     if request.method != 'POST':
@@ -360,6 +609,7 @@ def editcf(request):
 
     sweetify.success(request, 'Perubahan nilai CF Berhasil')
     return redirect('/certain-factor')
+
 
 def rulebase(request):
     hapusCF = request.GET.get('IDCFHapus')

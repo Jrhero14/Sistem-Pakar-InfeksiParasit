@@ -15,6 +15,12 @@ urlpatterns = [
     path('details/', PakarViews.detailsPenyakitView),
     path('konsultasi/', PakarViews.diagnosisView),
     path('pertanyaan/', PakarViews.pertanyaanView),
+    path('tambah-gejala-pasien/', PakarViews.pilihGejalaPasien),
+
+    path('kumpulkan/', PakarViews.kumpulkanGejala),
+    path('inference/', PakarViews.inferenceEngine),
+    path('hasil-diagnosa/', PakarViews.hasilDiagnosa),
+
     path('detail-pasien/', PakarViews.detailPasienView),
     path('certain-factor/', PakarViews.rulebase),
     path('certain-factor-edit/', PakarViews.editcf),
