@@ -2,34 +2,148 @@
 {% load static %}
 
 {% block content %}
-    <section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
-          <div class="container">
-               <div class="row">
-                    <div class="col-lg-6 col-md-12 col-xl-7">
-                         <div class="block">
-                              <label class="h5 mt-4" for="">{{ GejalaObj.IDGejala }}</label><p class="ms-2 d-inline">dari G37</p>
-                              <div class="divider"></div>
-                              <h2 class="mb-3 mt-5">{{ GejalaObj.Pertanyaan }}</h2>
-                              <p class="mb-4 pr-5">{{ GejalaObj.SubPenjelasan }}</p>
-                              <div class="d-flex">
-                                  <form class="me-3" action="/pertanyaan/" method="POST">
-                                  {% csrf_token %}
-                                   <input type="hidden" name="IdPasien" value="{{ IdPasien }}">
-                                   <input type="hidden" name="IdGejala" value="{{ GejalaObj.IDGejala }}">
-                                   <input type="hidden" name="TanyaPasien" value="True">
-                                   <button name="Iya" value="True" class="btn btn-success">Iya</button>
-                              </form>
-                             <form action="/pertanyaan/" method="POST">
-                                  {% csrf_token %}
-                                   <input type="hidden" name="IdPasien" value="{{ IdPasien }}">
-                                   <input type="hidden" name="IdGejala" value="{{ GejalaObj.IDGejala }}">
-                                   <input type="hidden" name="TanyaPasien" value="True">
-                                   <button name="Tidak" value="False" class="btn btn-danger">Tidak</button><br>
-                              </form>
+<section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
+     <div class="container my-3">
+          <div class="row gx-2">
+               <div class="col-6">
+                    <div class="block border border-3 rounded-3 bg-white px-3">
+                         <h2>Pilih Gejala</h2>
+                         <form>
+                              <div class="input-group mb-3">
+                                   <input type="text" class="form-control" placeholder="Cari Gejala"
+                                        aria-label="Cari Gejala" aria-describedby="button-addon2">
+                                   <button class="btn btn-primary" type="button"
+                                        id="button-addon2">Cari</button>
                               </div>
-                         </div>
+                         </form>
+                         <a class="btn btn-info btn-sm" href="http://">Tampilkan Semua Gejala</a>
+                         <table class="table my-5 table-bordered border-2">
+                              <thead>
+                                   <tr>
+                                        <th class="col-1" scope="col">ID Gejala</th>
+                                        <th class="col-2" scope="col">Nama Gejala</th>
+                                        <th class="col-1" scope="col">Action</th>
+                                   </tr>
+                              </thead>
+                              <tbody>
+                                   {% for gejala in gejalas %}
+                                   <tr>
+                                        <th>{{ gejala.IDGejala }}</th>
+                                        <td>{{ gejala.NamaGejala }}</td>
+                                        <td class="text-center">
+                                             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                                  data-bs-target="#PilihGejala{{ gejala.pk }}">
+                                                  Pilih
+                                             </button>
+                                             <!-- Modal -->
+                                             <div class="modal fade" id="PilihGejala{{ gejala.pk }}" tabindex="-1"
+                                                  aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                  <div class="modal-dialog modal-dialog-centered modal-xl">
+                                                       <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                 <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                                                      {{gejala.NamaGejala}}</h1>
+                                                                 <button type="button" class="btn-close"
+                                                                      data-bs-dismiss="modal"
+                                                                      aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                 <h4 class="text-start">{{gejala.Pertanyaan}}</h4>
+                                                                 <p class="text-start">{{gejala.SubPenjelasan}}</p>
+                                                                 <p class="text-start fw-bold">Tingkat Yang Dirasakan:
+                                                                 </p>
+                                                                 <div class="border border-3">
+                                                                      <div class="btn-group btn-group-toggle btn-group-sm w-100"
+                                                                           data-toggle="buttons">
+                                                                           <label
+                                                                                class="btn btn-outline-success active">
+                                                                                <input type="radio" class="btn-check"
+                                                                                     name="section" id="option2"
+                                                                                     autocomplete="off" checked />
+                                                                                Sangat Iya <br> 100%
+                                                                           </label>
+                                                                           <label class="btn btn-outline-success">
+                                                                                <input type="radio" class="btn-check"
+                                                                                     name="section" id="option2"
+                                                                                     autocomplete="off" />
+                                                                                Kemungkinan Besar Iya <br> 80%
+                                                                           </label>
+                                                                           <label class="btn btn-outline-success">
+                                                                                <input type="radio" class="btn-check"
+                                                                                     name="section" id="option2"
+                                                                                     autocomplete="off" />
+                                                                                Mungkin Iya <br> 60%
+                                                                           </label>
+                                                                           <label class="btn btn-outline-secondary">
+                                                                                <input type="radio" class="btn-check"
+                                                                                     name="section" id="option1"
+                                                                                     autocomplete="off" />
+                                                                                Lumayan <br> 40%
+                                                                           </label>
+                                                                           <label class="btn btn-outline-secondary">
+                                                                                <input type="radio" class="btn-check"
+                                                                                     name="section" id="option1"
+                                                                                     autocomplete="off" />
+                                                                                Sedikit <br> 20%
+                                                                           </label>
+                                                                           <label class="btn btn-outline-danger">
+                                                                                <input type="radio" class="btn-check"
+                                                                                     name="section" id="option1"
+                                                                                     autocomplete="off" />
+                                                                                Sangat Tidak Setuju <br> 0%
+                                                                           </label>
+                                                                      </div>
+                                                                 </div>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                 <button type="button" class="btn btn-secondary"
+                                                                      data-bs-dismiss="modal">Close</button>
+                                                                 <button type="submit" form="submitEdit{{ gejala.pk }}"
+                                                                      class="btn btn-primary"
+                                                                      onclick="return confirm('Yakin menyimpan perubahan?')">Pilih
+                                                                      Gejala</button>
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </td>
+                                   </tr>
+                                   {% endfor %}
+                              </tbody>
+                         </table>
+                    </div>
+               </div>
+
+               <div class="col-6">
+                    <div class="block border border-3 rounded-3 bg-white px-3">
+                         <h3>Gejala Yang Dipilih</h3>
+                         <table class="table my-5 table-bordered border-2">
+                              <thead>
+                                   <tr>
+                                        <th class="col-1" scope="col">ID Gejala</th>
+                                        <th class="col-2" scope="col">Nama Gejala</th>
+                                        <th class="col-2" scope="col">Tingkat</th>
+                                        <th class="col-1" scope="col">Action</th>
+                                   </tr>
+                              </thead>
+                              <tbody>
+                                   <tr>
+                                        <th></th>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-center">
+                                             <button class="btn btn-danger">Batal</button>
+                                        </td>
+                                   </tr>
+                              </tbody>
+                         </table>
+                         <button class="btn btn-success">Lakukan Diagnosa</button>
                     </div>
                </div>
           </div>
-     </section>
+     </div>
+</section>
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script src="jquery.twbs-toggle-buttons.min.js"></script>
 {% endblock %}

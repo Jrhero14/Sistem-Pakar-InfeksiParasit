@@ -15,9 +15,9 @@ urlpatterns = [
     path('details/', PakarViews.detailsPenyakitView),
     path('konsultasi/', PakarViews.diagnosisView),
     path('pertanyaan/', PakarViews.pertanyaanView),
-    path('inputdataPasien/', PakarViews.inputPasien),
     path('detail-pasien/', PakarViews.detailPasienView),
     path('certain-factor/', PakarViews.rulebase),
+    path('certain-factor-edit/', PakarViews.editcf),
     path('dashboard/', PakarViews.indexAdmin),
     path('', PakarViews.indexView),
 ]

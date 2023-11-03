@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from DomainPakar.models import Gejala, Pasien, CFPakar, Penyakit
 from django.contrib.auth import login, authenticate, logout
@@ -287,14 +288,27 @@ def diagnosisView(request):
         return redirect('/dashboard')
     userLogin = request.user.is_authenticated and request.user.is_superuser
 
+    if request.COOKIES.get('IDPasien') is not None:
+        contexts = {
+            'login': userLogin,
+        }
+        return render(request=request, context=contexts, template_name='diagnosis-already.html')
+
     contexts = {
         'login': userLogin,
     }
     return render(request=request, context=contexts, template_name='diagnosis.html')
 
-def inputPasien(request):
+def pertanyaanView(request):
+    print(request.COOKIES)
     if request.user.username == 'admin':
         return redirect('/dashboard')
+
+    if request.COOKIES.get('IDPasien') is None:
+        sweetify.warning(request, 'Maaf Anda belum melakukan pendaftaran Pasien, silakan mendaftar')
+        return redirect('/konsultasi')
+
+    userLogin = request.user.is_authenticated and request.user.is_superuser
     if request.method == 'POST':
         isibiodata = request.POST.get('BiodataPasien')
         if isibiodata is not None:
@@ -305,7 +319,7 @@ def inputPasien(request):
             alamat = request.POST.get('alamat')
             nomortelp = request.POST.get('nomortelp')
 
-            pasienObj = Pasien.objects.create(
+            Pasien.objects.create(
                 IDPasien=IDPasien,
                 NamaLengkap=namalengkap,
                 TanggalLahir=datetime.strptime(tgllahir, '%Y-%m-%d'),
@@ -313,59 +327,39 @@ def inputPasien(request):
                 Alamat=alamat,
                 NomorTelp=nomortelp
             )
-
-            return redirect('/konsultasi')
-
-            # contexts = {
-            #     'IdPasien': IDPasien,
-            #     'login': False,
-            #     'GejalaObj': Gejala.objects.first()
-            # }
-            # return render(request=request, context=contexts, template_name='pertanyaan.html')
-
-def pertanyaanView(request):
-    if request.user.username == 'admin':
-        return redirect('/dashboard')
-    userLogin = request.user.is_authenticated and request.user.is_superuser
-    if request.method == 'POST':
-        isiPertanyaan = request.POST.get('TanyaPasien')
-        if(isiPertanyaan is not None):
-            print(request.POST)
-            IDpasien = request.POST.get('IdPasien')
-            IDgejala = request.POST.get('IdGejala')
-
-            dump = int(str(IDgejala).replace('G', ''))
-            if (dump+1 < 10):
-                nextIDGejala = f'G0{dump+1}'
-            else:
-                nextIDGejala = f'G{dump+1}'
-
-
-            Iya = True if request.POST.get('Iya') is not None else False
-            Tidak = True if request.POST.get('Tidak') is not None else False
-
-
-            if Iya:
-                print("GEJALA IYAAAAAAA")
-                gejalaObj = Gejala.objects.get(IDGejala=IDgejala)
-                pasienObj = Pasien.objects.get(IDPasien=IDpasien)
-                pasienObj.GejalaPasien.add(gejalaObj)
-                pasienObj.save()
-            elif Tidak:
-                # Not Implement yet
-                pass
-
             contexts = {
-                'IdPasien': IDpasien,
                 'login': userLogin,
-                'GejalaObj': Gejala.objects.get(IDGejala=nextIDGejala)
             }
-
-            return render(request=request, context=contexts, template_name='pertanyaan.html')
-        else:
-            return redirect('/')
+            response = render(request=request, context=contexts, template_name='pertanyaan.html')
+            response.set_cookie('IDPasien', IDPasien)
+            return response
     else:
-        return redirect('/')
+        contexts = {
+            'gejalas': Gejala.objects.all(),
+            'login': userLogin,
+        }
+        response = render(request=request, context=contexts, template_name='pertanyaan.html')
+        return response
+        # return redirect('/')
+
+def editcf(request):
+    if request.method != 'POST':
+        return redirect('/certain-factor')
+
+    print(request.POST)
+    IDPenyakit = request.POST.get('Penyakit')
+    IDGejala = request.POST.get('Gejala')
+    MB = float(request.POST.get('MB'))
+    MD = float(request.POST.get('MD'))
+    CF = MB - MD
+    cfobj = CFPakar.objects.get(RelasiPenyakit__IDPenyakit=IDPenyakit, RelasiGejala__IDGejala=IDGejala)
+    cfobj.MB = MB
+    cfobj.MD = MD
+    cfobj.CF = CF
+    cfobj.save()
+
+    sweetify.success(request, 'Perubahan nilai CF Berhasil')
+    return redirect('/certain-factor')
 
 def rulebase(request):
     hapusCF = request.GET.get('IDCFHapus')
