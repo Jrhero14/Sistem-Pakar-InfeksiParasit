@@ -25,5 +25,10 @@ urlpatterns = [
     path('certain-factor/', PakarViews.rulebase),
     path('certain-factor-edit/', PakarViews.editcf),
     path('dashboard/', PakarViews.indexAdmin),
+    path('rekam-medis/', PakarViews.rekamMedis),
     path('', PakarViews.indexView),
 ]
+
+
+
+

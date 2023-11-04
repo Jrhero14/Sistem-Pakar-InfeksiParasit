@@ -5,63 +5,52 @@
 <div class="container">
      <nav class="mt-5" aria-label="breadcrumb">
           <ol class="breadcrumb">
-               <li class="breadcrumb-item text-primary" aria-current="page"><a href="/dashboard" class="text-primary">Dashboard</a></li>
+               <li class="breadcrumb-item text-primary" aria-current="page"><a href="/dashboard"
+                         class="text-primary">Dashboard</a></li>
           </ol>
      </nav>
 
+     <div class="container mt-3">
+          <div class="row justify-content-between">
+               <div class="col-2 p-3 bg-secondary rounded rounded-4">
+                    <h2 class="text-white">{{ totalPenyakit }} <i class="bi bi-virus2"></i></h2>
+                    <h3 class="text-white">Penyakit</h3>
+               </div>
+               <div class="col-3 p-3 bg-warning rounded rounded-4">
+                    <h2 class="text-white">{{ totalGejala }} <i class="bi bi-lungs-fill"></i></h2>
+                    <h3 class="text-white">Total Gejala</h3>
+               </div>
 
-     {% if login %}
-     <div class="container p-5 mt-3 card">
-          <form action="/tambahData/" method="POST">
-              {% csrf_token %}
-               <h3>Cari Data Pasien</h3>
-               <input type="hidden" name="TambahGejala" value="True">
-               <div class="mb-3">
-                    <label for="InputIDPasien" class="form-label">ID Pasien</label>
-                    <input name="IDPasien" type="text" class="form-control" id="InputIDPasien">
+               <div class="col-3 p-3 bg-primary rounded rounded-4">
+                    <h2 class="text-white">{{ totalCFPakar }} <i class="bi bi-prescription2"></i></h2>
+                    <h3 class="text-white">Total CF pakar</h3>
                </div>
-               <div class="mb-3">
-                    <label for="InputNama" class="form-label">Nama Pasien</label>
-                    <input name="namaPasien" type="text" class="form-control" id="InputNama">
+               <div class="col-3 p-3 bg-success rounded rounded-4">
+                    <h2 class="text-white">{{ totalRekamMedis }} <i class="bi bi-clipboard2-pulse-fill"></i></h2>
+                    <h3 class="text-white">Total Rekam Medis</h3>
                </div>
-               <button type="submit" class="btn btn-primary">Cari</button>
-          </form>
+          </div>
      </div>
-     {% endif %}
 
-     {% if login %}
-         <table class="table my-5 table-bordered table-secondary border-2">
-         {% else %}
-         <table class="table my-5 table-bordered border-2">
-     {% endif %}
-          <thead>
-               <tr>
-                   <th class="col-1" scope="col">ID Pasien</th>
-                   <th class="col-2" scope="col">Nama</th>
-                   <th class="col-2" scope="col">Diagnosis</th>
-                   {% if login %}
-                       <th class="col-1" scope="col">Action</th>
-                   {% endif %}
-               </tr>
-          </thead>
-          <tbody>
-          {% for pasien in pasiens %}
-               <tr>
-                    <th>{{ pasien.IDPasien }}</th>
-                    <td>{{ pasien.NamaLengkap }}</td>
-               {% if pasien.Diagnosis is None %}
-                   <td>Belum Terdiagnosis</td>
-                   {% else %}
-                   <td>{{ pasien.Diagnosis }}</td>
-               {% endif %}
-                   {% if login %}
-                    <td>
-                         <a class="btn btn-warning" href="/detail-pasien?IDPasien={{ pasien.IDPasien }}">Details</a>
-                    </td>
-                    {% endif %}
-               </tr>
-          {% endfor %}
-          </tbody>
-     </table>
+     <div class="container mt-5">
+          <h3 class="mb-3">Data Rules</h3>
+          <table class="table table-bordered border-secondary">
+               <thead class="table-secondary">
+                    <tr>
+                         <th scope="col">Rule</th>
+                         <th scope="col">Kaidah</th>
+                    </tr>
+               </thead>
+               <tbody>
+               {% for rule in rules %}
+                   <tr>
+                         <th scope="row">{{ rule.Rule }}</th>
+                         <td>{{ rule.Kaidah }}</td>
+                    </tr>
+               {% endfor %}
+               </tbody>
+          </table>
+     </div>
+
 </div>
 {% endblock %}

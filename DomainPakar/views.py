@@ -99,13 +99,52 @@ def indexView(request):
 
 def indexAdmin(request):
     userLogin = request.user.is_authenticated and request.user.is_superuser
+
+    class Rules:
+        def __init__(self, rule: str, kaidah: str):
+            self.Rule = rule,
+            self.Kaidah = kaidah
+
+    penyakits = Penyakit.objects.all()
+    rules = []
+    for idx, penyakit in enumerate(penyakits):
+        dump = 'IF'
+        for gejala in penyakit.GejalaPenyakit.all():
+            dump += ' ' + gejala.IDGejala
+        dump += f' THEN {penyakit.IDPenyakit}'
+        obj = Rules(rule=f'R{idx+1}', kaidah=dump)
+        obj.Rule = obj.Rule[0]
+        rules.append(obj)
+
+    contexts = {
+        'totalPenyakit':len(penyakits),
+        'totalGejala': len(Gejala.objects.all()),
+        'totalCFPakar': len(CFPakar.objects.all()),
+        'totalRekamMedis': len(Pasien.objects.all()),
+        'login': userLogin,
+        'rules': rules
+    }
+    return render(request=request, context=contexts, template_name='admin.html')
+
+def rekamMedis(request):
+    userLogin = request.user.is_authenticated and request.user.is_superuser
     pasiens = Pasien.objects.all()
+    if request.GET.get('IDPasien') is not None:
+        if request.GET.get('IDPasien') != '':
+            pasiens = Pasien.objects.filter(IDPasien=request.GET.get('IDPasien'))
+
+    if request.GET.get('namaPasien') is not None:
+        if request.GET.get('namaPasien') != '':
+            pasiens = Pasien.objects.filter(NamaLengkap__contains=request.GET.get('namaPasien'))
+
+    if len(pasiens) == 0:
+        sweetify.error(request, 'Pasien Tidak Ditemukan')
+
     contexts = {
         'login': userLogin,
         'pasiens': pasiens
     }
-    return render(request=request, context=contexts, template_name='admin.html')
-
+    return render(request=request, context=contexts, template_name='data-pasien.html')
 
 def detailPasienView(request):
     IDPasien = request.GET.get('IDPasien')
@@ -150,18 +189,10 @@ def detailPasienView(request):
             'pasien': pasienObj,
             'GejalaTerbesar': gejalas[0],
             'GejalaLain': gejalas[1:],
-            'login': False,
+            'login': userLogin,
         }
         response = render(request=request, context=contexts, template_name='details-pasien.html')
         return response
-
-        # pasienObj = Pasien.objects.get(IDPasien=IDPasien)
-        # contexts = {
-        #     'login': userLogin,
-        #     'Pasien': pasienObj,
-        #     'Gejalas': pasienObj.GejalaPasien.all()
-        # }
-        # return render(request=request, context=contexts, template_name='details-pasien.html')
 
 
 def tambahDataPOST(request):

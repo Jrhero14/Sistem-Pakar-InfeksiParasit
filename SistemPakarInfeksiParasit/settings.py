@@ -84,10 +84,10 @@ WSGI_APPLICATION = 'SistemPakarInfeksiParasit.wsgi.application'
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'pakar1',
+    'NAME': 'parasiteDB',
     'USER': 'Jrhero14',
-    'PASSWORD': 'SdL2MagQh0vn',
-    'HOST': 'ep-patient-water-14529859.ap-southeast-1.aws.neon.tech',
+    'PASSWORD': 'DhxI0Kkl9QPo',
+    'HOST': 'ep-orange-mud-05601964.ap-southeast-1.aws.neon.tech',
     'PORT': '5432',
     'OPTIONS': {'sslmode': 'require'},
   }
