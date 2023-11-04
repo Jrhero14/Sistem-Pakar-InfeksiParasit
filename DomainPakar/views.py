@@ -129,15 +129,18 @@ def indexAdmin(request):
 def rekamMedis(request):
     userLogin = request.user.is_authenticated and request.user.is_superuser
     pasiens = Pasien.objects.all()
-    if request.GET.get('IDPasien') is not None:
-        if request.GET.get('IDPasien') != '':
-            pasiens = Pasien.objects.filter(IDPasien=request.GET.get('IDPasien'))
+    IdPasien = request.GET.get('IDPasien')
+    namaPasien = request.GET.get('namaPasien')
 
-    if request.GET.get('namaPasien') is not None:
-        if request.GET.get('namaPasien') != '':
-            pasiens = Pasien.objects.filter(NamaLengkap__contains=request.GET.get('namaPasien'))
+    if IdPasien is not None:
+        if IdPasien != '':
+            pasiens = Pasien.objects.filter(IDPasien=IdPasien)
 
-    if len(pasiens) == 0:
+    if namaPasien is not None:
+        if namaPasien != '':
+            pasiens = Pasien.objects.filter(NamaLengkap__contains=namaPasien)
+
+    if len(pasiens) == 0 and (IdPasien != None or namaPasien != None):
         sweetify.error(request, 'Pasien Tidak Ditemukan')
 
     contexts = {
