@@ -383,7 +383,19 @@ def diagnosisView(request):
 
     if request.COOKIES.get('IDPasien') is not None:
         already = True
-        name = Pasien.objects.get(IDPasien=request.COOKIES.get('IDPasien')).NamaLengkap
+        if Pasien.objects.filter(IDPasien=request.COOKIES.get('IDPasien')).exists():
+            name = Pasien.objects.get(IDPasien=request.COOKIES.get('IDPasien')).NamaLengkap
+        else:
+            # Delete All Cookies
+            for cookie in request.COOKIES:
+                contexts = {
+                    'already': False,
+                    'name': name,
+                    'login': userLogin,
+                }
+                response = render(request=request, context=contexts, template_name='diagnosis.html')
+                response.delete_cookie(cookie)
+                return response
 
     contexts = {
         'already': already,
