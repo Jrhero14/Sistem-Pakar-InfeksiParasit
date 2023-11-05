@@ -345,6 +345,8 @@ def loginView(request):
         if user is not None:
             login(request, user)
             return redirect('/')
+        else:
+            sweetify.error(request, 'Salah username atau password')
 
     contexts = {}
     return render(request=request, context=contexts, template_name='login.html')
@@ -478,7 +480,9 @@ def pilihGejalaPasien(request):
 def kumpulkanGejala(request):
     idPasien = request.COOKIES.get('IDPasien')
     gejalaPasienObj = GejalaPasien.objects.filter(KeyPasien__IDPasien=idPasien)
-    print(gejalaPasienObj)
+    if len(gejalaPasienObj) == 0:
+        sweetify.error('Anda belum memilih gejala apapun, silakan pilih')
+        return redirect('/pertanyaan')
     pasienObj = Pasien.objects.get(IDPasien=idPasien)
     for gejala in gejalaPasienObj:
         pasienObj.GejalaPasien.add(gejala.KeyGejala)
