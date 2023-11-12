@@ -5,7 +5,67 @@ from datetime import datetime
 import random, string
 import sweetify
 import json
+from io import BytesIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("utf-8")), result)
+    if pdf.err:
+        return HttpResponse("Invalid PDF", status_code=400, content_type='text/plain')
+    return HttpResponse(result.getvalue(), content_type='application/pdf')
+
+def getPasienPDF(request):
+    IDPasien = request.GET.get('IDPasien')
+    if IDPasien == None:
+        return redirect('/')
+
+    if IDPasien is not None:
+        pasienObj = Pasien.objects.get(IDPasien=IDPasien)
+        listTerbesar = list(pasienObj.Diagnosis.all().order_by('-Persentase').values_list('IDPenyakit'))
+
+        class hasilDiagnosaObj:
+            def __init__(self, penyakit: str, persen: float, definisi: str = '', solusi: str = '', pecegahan: str = ''):
+                self.namaPenyakit = penyakit
+                self.Persentase = round(persen, 2)
+                self.Definisi = definisi,
+                self.Solusi = solusi,
+                self.Pencegahan = pecegahan
+
+        gejalas = []
+        obj = Penyakit.objects.get(IDPenyakit=listTerbesar[0][0])
+        gejalas.append(
+            hasilDiagnosaObj(
+                penyakit=obj.NamaPenyakit,
+                persen=HasilDiagnosa.objects.get(IDPenyakit=listTerbesar[0][0], IDPasien=IDPasien).Persentase,
+                definisi=str(obj.Definisi),
+                solusi=str(obj.Solusi),
+                pecegahan=str(obj.Pencegahan)
+            )
+        )
+
+        gejalas[0].Definisi = gejalas[0].Definisi[0]
+        gejalas[0].Solusi = gejalas[0].Solusi[0]
+
+        for i in listTerbesar[1:]:
+            gejalas.append(
+                hasilDiagnosaObj(
+                    penyakit=Penyakit.objects.get(IDPenyakit=i[0]).NamaPenyakit,
+                    persen=HasilDiagnosa.objects.get(IDPenyakit=i[0], IDPasien=IDPasien).Persentase
+                )
+            )
+
+        contexts = {
+            'pasien': pasienObj,
+            'GejalaTerbesar': gejalas[0],
+            'GejalaLain': gejalas[1:],
+            'login': False,
+        }
+    return render_to_pdf(template_src='pdf.html', context_dict=contexts)
 
 def dumpData(request):
     listGejala = []
