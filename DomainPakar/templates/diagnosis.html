@@ -2,14 +2,15 @@
 {% load static %}
 
 {% block content %}
-    {% if already %}
-        <section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
+{% if already %}
+<section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
      <div class="container">
           <div class="row">
                <div class="col-lg-6 col-md-12 col-xl-7">
                     <div class="block">
                          <div class="divider mb-3"></div>
-                         <h2 class="mb-3 mt-3">{{ name }}, Anda sudah melakukan pendaftaran, silakan melanjutkan konsultasi</h2>
+                         <h2 class="mb-3 mt-3">{{ name }}, Anda sudah melakukan pendaftaran, silakan melanjutkan
+                              konsultasi</h2>
 
                          <a href="/pertanyaan" class="mb-4 pr-5 btn btn-success">Lanjutkan Konsultasi</a>
                     </div>
@@ -17,8 +18,8 @@
           </div>
      </div>
 </section>
-    {% else %}
-        <section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
+{% else %}
+<section class="banner" style="background-image: url('{% static 'images/bg/banner.jpg' %}');">
      <div class="container">
           <div class="row">
                <div class="col-lg-6 col-md-12 col-xl-7">
@@ -39,7 +40,7 @@
           <div class="row">
                <div class="col-lg-12">
                     <div class="feature-item mb-5 mb-lg-0">
-                         <form action="/pertanyaan/" method="POST">
+                         <form id="biodataForm" action="/pertanyaan/" method="POST">
                               {% csrf_token %}
                               <h3>Data Diri</h3>
                               <input name="BiodataPasien" type="hidden" value="True">
@@ -72,14 +73,41 @@
                                    <label for="telp" class="form-label">Nomor Telepon</label>
                                    <input name="nomortelp" type="number" class="form-control" id="telp">
                               </div>
-                              <button class="btn btn-main btn-icon btn-round-full" type="submit"
-                                   onclick="return confirm('Sudah Mengisi Data Dengan Benar ?')">Lanjutkan</button>
+                              <button class="btn btn-main btn-icon btn-round-full" type="submit">Lanjutkan</button>
                          </form>
+                         <script>
+                              document.querySelector('#biodataForm').addEventListener(
+                                   'submit',
+                                   function (e) {
+                                        var form = this;
+
+                                        e.preventDefault(); // <--- prevent form from submitting
+
+                                        Swal.fire({
+                                             title: "Sudah mengisi biodata dengan benar ?",
+                                             icon: "question",
+                                             showCancelButton: true,
+                                             confirmButtonColor: "#3085d6",
+                                             cancelButtonColor: "#d33",
+                                             confirmButtonText: "Yes"
+                                        }).then((result) => {
+                                             if (result.isConfirmed) {
+                                                  Swal.fire({
+                                                       title: 'Memproses mohon tunggu',
+                                                       allowEscapeKey: false,
+                                                       allowOutsideClick: false,
+                                                  });
+                                                  swal.showLoading();
+                                                  form.submit();
+                                             }
+                                        });
+                                   });
+                         </script>
                     </div>
                </div>
           </div>
      </div>
 </section>
-    {% endif %}
+{% endif %}
 
 {% endblock %}

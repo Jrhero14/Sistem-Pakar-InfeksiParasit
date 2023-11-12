@@ -12,7 +12,7 @@
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-12 col-lg-6 p-5 card">
-            <form action="/login/" method="POST">
+            <form id="loginForm" action="/login/" method="POST">
                 {% csrf_token %}
                 <h3>LOGIN</h3>
                 <div class="mb-3">
@@ -25,6 +25,23 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
+            <script>
+                document.querySelector('#loginForm').addEventListener(
+                    'submit',
+                    function (e) {
+                        var form = this;
+
+                        e.preventDefault(); // <--- prevent form from submitting
+
+                        Swal.fire({
+                            title: 'Memproses login...',
+                            allowEscapeKey: false,
+                            allowOutsideClick: false,
+                        });
+                        swal.showLoading();
+                        form.submit();
+                    });
+            </script>
         </div>
     </div>
 </div>
